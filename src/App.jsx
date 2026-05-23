@@ -126,7 +126,7 @@ const CONFLICT_PAIRS = [
   { id1:'tansy',       id2:'lemonbalm',   reason:'Tansy suppresses lemon balm' },
   { id1:'pennyroyal',  id2:'tulsi',       reason:'Pennyroyal dominates competing aromatics' },
   { id1:'pennyroyal',  id2:'lemonbalm',   reason:'Pennyroyal suppresses lemon balm' },
-  { id1:'lemongrass',  id2:'moringa',     reason:'Lemongrass root secretions inhibit Moringa' },
+  { id1:'lemongrass',  id2:'moringa',     reason:'Lemongrass chemical secretions can inhibit Moringa seedlings — keep at least 5ft apart until moringa is established' },
   { id1:'mango',       id2:'avsharwil',   reason:'Both heavy feeders, compete for same nutrients' },
   { id1:'mango',       id2:'avmalama',    reason:'Both heavy feeders, compete for same nutrients' },
   { id1:'soursop',     id2:'lychee',      reason:'Both susceptible to same fungal issues — clusters increase disease pressure' },
@@ -796,10 +796,12 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               if (plant.alleloRadius) {
                 const r = plant.alleloRadius * SC;
                 const active = isOv || isProx;
+                const fill = active ? "rgba(220,50,50,0.25)" : `rgba(${hexRgb(tc.color)},0.15)`;
+                const stroke = active ? "#e05050" : `${tc.border}99`;
                 return (
                   <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
-                    fill={active?"rgba(220,50,50,0.15)":"rgba(220,50,50,0.05)"}
-                    stroke="#e05050"
+                    fill={fill}
+                    stroke={stroke}
                     strokeWidth={isSel?1.6:1}
                     strokeDasharray="5,3"
                     opacity={dim?0.2:1}/>
