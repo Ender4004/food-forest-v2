@@ -9,6 +9,7 @@ const TYPE_META = {
   ground:    { label: "Ground Cover",  color: "#386641", border: "#a7c957", text: "#e8f5c0", circleOpacity: 0.28 },
   tea:       { label: "Medicinal Tea", color: "#2a1a4a", border: "#9b72cf", text: "#d4b8f0", circleOpacity: 0.22 },
   aromatic:  { label: "Aromatic",      color: "#4a2a1a", border: "#e8956d", text: "#ffd5b0", circleOpacity: 0.22 },
+  nFixer:    { label: "Nitrogen Fixer", color: "#3a4a10", border: "#c8e620", text: "#e8f5a0", circleOpacity: 0.15 },
 };
 
 const PLANTS = [
@@ -20,8 +21,8 @@ const PLANTS = [
   { id:"mango",      name:"Mango Rapoza",          emoji:"🥭", type:"canopy",    spread:15, height:15, water:"moderate", note:"Managed · anthracnose resistant" },
   { id:"breadfruit", name:"Breadfruit Maafala",    emoji:"🍞", type:"canopy",    spread:15, height:20, water:"moderate", note:"Compact Polynesian variety" },
   { id:"coconut",    name:"Coconut Maypan Dwarf",  emoji:"🥥", type:"canopy",    spread:12, height:22, water:"moderate", note:"Dwarf · 3-4 yrs to produce" },
-  { id:"inga",       name:"Inga Ice Cream Bean",   emoji:"🍦", type:"canopy",    spread:15, height:15, water:"moderate", note:"Pollard to 15ft · N-fixer · coffee shade" },
-  { id:"gliricidia", name:"Gliricidia",            emoji:"🌸", type:"canopy",    spread:8,  height:10, water:"moderate", note:"Coppice to 8ft · N-fixer · chop and drop" },
+  { id:"inga",       name:"Inga Ice Cream Bean",   emoji:"🍦", type:"canopy",    spread:15, height:15, water:"moderate", nFixer:true, note:"Pollard to 15ft · N-fixer · coffee shade" },
+  { id:"gliricidia", name:"Gliricidia",            emoji:"🌸", type:"canopy",    spread:8,  height:10, water:"moderate", nFixer:true, note:"Coppice to 8ft · N-fixer · chop and drop" },
   { id:"vitex",      name:"Vitex",                 emoji:"💜", type:"canopy",    spread:10, height:12, water:"moderate", note:"Hormonal balance · purple flowers" },
   { id:"citlemon",   name:"Meyer Lemon dwarf",     emoji:"🍋", type:"canopy",    spread:7,  height:7,  water:"moderate", note:"Dwarf grafted · shelf" },
   { id:"citkumquat", name:"Kumquat dwarf",         emoji:"🟠", type:"canopy",    spread:6,  height:7,  water:"moderate", note:"Dwarf · shelf" },
@@ -37,27 +38,29 @@ const PLANTS = [
   { id:"elderberry", name:"Elderberry",            emoji:"🫐", type:"subcanopy", spread:6,  height:9,  water:"high", note:"Immune · flower and berry tea" },
   { id:"noni",       name:"Noni",                  emoji:"🟡", type:"subcanopy", spread:8,  height:10, water:"moderate", note:"Traditional Hawaiian medicine" },
   { id:"cinnamon",   name:"Cinnamon Ceylon",       emoji:"🌿", type:"subcanopy", spread:8,  height:10, water:"moderate", note:"True cinnamon · bark harvest" },
-  { id:"moringa",    name:"Moringa PKM-1",         emoji:"🌱", type:"shrub",     spread:4,  height:6,  water:"moderate", note:"Cut monthly · N-fixer · leaf crop" },
+  { id:"moringa",    name:"Moringa PKM-1",         emoji:"🌱", type:"shrub",     spread:4,  height:6,  water:"moderate", nFixer:true, note:"Cut monthly · N-fixer · leaf crop" },
   { id:"mamaki",     name:"Mamaki",                emoji:"🍃", type:"shrub",     spread:6,  height:9,  water:"high", note:"Endemic Hawaiian tea · wet understory" },
   { id:"coffee",     name:"Coffee Caturra",        emoji:"☕", type:"shrub",     spread:5,  height:7,  water:"moderate", note:"Part shade · Haiku ideal" },
   { id:"katuk",      name:"Katuk",                 emoji:"🌿", type:"shrub",     spread:4,  height:6,  water:"moderate", note:"High protein leaf · part shade" },
   { id:"acerola",    name:"Acerola Cherry",        emoji:"🍒", type:"shrub",     spread:8,  height:8,  water:"moderate", note:"Extremely high vitamin C" },
   { id:"mulberry",   name:"Mulberry Dwarf",        emoji:"🫐", type:"shrub",     spread:8,  height:8,  water:"moderate", note:"Year-round fruit · fast" },
-  { id:"pigeonpea",  name:"Pigeon Pea",            emoji:"🌿", type:"shrub",     spread:4,  height:8,  water:"moderate", note:"N-fixer pioneer · chop and drop" },
+  { id:"pigeonpea",  name:"Pigeon Pea",            emoji:"🌿", type:"shrub",     spread:4,  height:8,  water:"moderate", nFixer:true, note:"N-fixer pioneer · chop and drop" },
   { id:"chili",      name:"Hawaiian Chili Pepper", emoji:"🌶️", type:"shrub",     spread:3,  height:4,  water:"low", note:"Self-seeds permanently" },
   { id:"roselle",    name:"Roselle Hibiscus",      emoji:"🌺", type:"shrub",     spread:4,  height:5,  water:"moderate", note:"Hibiscus tea · vitamin C" },
   { id:"lemongrass", name:"Lemongrass",            emoji:"🌾", type:"shrub",     spread:3,  height:4,  alleloRadius:5, water:"low", note:"Corner marker · deterrent · tea" },
   { id:"citronella", name:"Citronella Grass",      emoji:"🌾", type:"shrub",     spread:3,  height:4,  water:"low", note:"True citronella · mosquito deterrent" },
+  { id:"vetiver",    name:"Vetiver Grass",         emoji:"🌾", type:"shrub",     spread:3,  height:5,  water:"low", note:"Erosion control · deep roots hold slopes · gulch edge and terrace faces · plant in rows" },
+  { id:"sesbania",   name:"Sesbania",              emoji:"🌿", type:"shrub",     spread:6,  height:15, water:"moderate", nFixer:true, note:"Fast growing N-fixer · pioneer tree · fixes large amounts of nitrogen · chop and drop · short lived 2-3 years" },
   { id:"lilikoi",    name:"Lilikoi Possum Purple", emoji:"💛", type:"vine",      spread:15, height:15, water:"moderate", note:"Plant first · year-round" },
   { id:"chayote",    name:"Chayote",               emoji:"🥒", type:"vine",      spread:20, height:15, water:"moderate", note:"100+ fruit per yr · plant whole" },
   { id:"dragonfruit",name:"Dragon Fruit",          emoji:"🐉", type:"vine",      spread:6,  height:8,  water:"low", note:"Post anchor · architectural" },
   { id:"vanilla",    name:"Vanilla Planifolia",    emoji:"🌸", type:"vine",      spread:10, height:12, water:"moderate", note:"Hand pollinate · high value" },
-  { id:"wingedbean", name:"Winged Bean",           emoji:"🫘", type:"vine",      spread:8,  height:8,  water:"moderate", note:"N-fixer · all parts edible" },
-  { id:"longbean",   name:"Long Bean",             emoji:"🫛", type:"vine",      spread:6,  height:6,  water:"low", note:"Fast · prolific · direct sow" },
+  { id:"wingedbean", name:"Winged Bean",           emoji:"🫘", type:"vine",      spread:8,  height:8,  water:"moderate", nFixer:true, note:"N-fixer · all parts edible" },
+  { id:"longbean",   name:"Long Bean",             emoji:"🫛", type:"vine",      spread:6,  height:6,  water:"low", nFixer:true, note:"Fast · prolific · direct sow" },
   { id:"blackpepper",name:"Black Peppercorn",      emoji:"🖤", type:"vine",      spread:8,  height:10, water:"low", note:"Climbs posts · high value" },
-  { id:"bpea",       name:"Blue Butterfly Pea",    emoji:"💙", type:"vine",      spread:10, height:10, water:"moderate", note:"Blue tea · N-fixer · calming" },
-  { id:"passflower", name:"Passionflower",         emoji:"💜", type:"vine",      spread:12, height:10, water:"moderate", note:"Sleep tea · calming" },
-  { id:"catsclw",    name:"Cats Claw",             emoji:"🌿", type:"vine",      spread:15, height:15, water:"high", note:"Immune · anti-inflammatory" },
+  { id:"bpea",       name:"Blue Butterfly Pea",    emoji:"💙", type:"vine",      spread:10, height:10, water:"moderate", nFixer:true, note:"Blue tea · N-fixer · calming" },
+  { id:"passflower", name:"Passionflower",         emoji:"💜", type:"vine",      spread:12, height:10, water:"moderate", nFixer:true, note:"Sleep tea · calming" },
+  { id:"catsclw",    name:"Cats Claw",             emoji:"🌿", type:"vine",      spread:15, height:15, water:"high", nFixer:true, note:"Immune · anti-inflammatory" },
   { id:"schisandra", name:"Schisandra",            emoji:"🔴", type:"vine",      spread:10, height:10, water:"moderate", note:"Adaptogen · five-flavor berry tea" },
   { id:"taro",       name:"Taro Lehua Maoli",      emoji:"🌿", type:"root",      spread:3,  height:4,  water:"high", note:"Wettest area · staple carb" },
   { id:"turmeric",   name:"Turmeric",              emoji:"🟡", type:"root",      spread:2,  height:3,  water:"high", note:"High value · harvest Nov-Jan" },
@@ -67,7 +70,7 @@ const PLANTS = [
   { id:"kava",       name:"Kava Awa",              emoji:"🌿", type:"root",      spread:4,  height:5,  water:"high", note:"Medicinal · ceremonial · 3-5yr" },
   { id:"sweetpot",   name:"Sweet Potato Okinawan", emoji:"🍠", type:"ground",    spread:4,  height:1,  alleloRadius:3, water:"low", note:"Living mulch · edible vine and tuber" },
   { id:"pineapple",  name:"Pineapple",             emoji:"🍍", type:"ground",    spread:2,  height:3,  water:"low", note:"Free from store crowns" },
-  { id:"peanutgrass",name:"Peanut Grass",          emoji:"🌾", type:"ground",    spread:2,  height:1,  water:"low", note:"N-fixing living mulch · sunny" },
+  { id:"peanutgrass",name:"Peanut Grass",          emoji:"🌾", type:"ground",    spread:2,  height:1,  water:"low", nFixer:true, note:"N-fixing living mulch · sunny" },
   { id:"okspinach",  name:"Okinawan Spinach",      emoji:"💜", type:"ground",    spread:2,  height:2,  water:"high", note:"Living mulch · nutritious" },
   { id:"comfrey",    name:"Comfrey Bocking 14",    emoji:"🌿", type:"ground",    spread:3,  height:2,  water:"moderate", note:"Around tree drip lines" },
   { id:"nasturtium", name:"Nasturtium",            emoji:"🧡", type:"ground",    spread:3,  height:1,  alleloRadius:4, water:"low", note:"Trap crop · edible · vitamin C" },
@@ -744,7 +747,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
 
   const clipId = `clip_${zone.id}`;
   const filteredLibrary = PLANTS.filter(p =>
-    (filterType==="all"||p.type===filterType) &&
+    (filterType==="all" || (filterType==="nFixer" ? p.nFixer : p.type===filterType)) &&
     (search===""||p.name.toLowerCase().includes(search.toLowerCase()))
   );
 
@@ -792,7 +795,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               const isOv = overlapping.has(plant.instanceId);
               const isProx = proximity.has(plant.instanceId);
               const isSel = selected===plant.instanceId;
-              const dim = filterType!=="all" && plant.type!==filterType;
+              const dim = filterType!=="all" && (filterType==="nFixer" ? !plant.nFixer : plant.type!==filterType);
               if (plant.alleloRadius) {
                 const r = plant.alleloRadius * SC;
                 const active = isOv || isProx;
@@ -833,7 +836,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             const isSel = selected===plant.instanceId;
             const isOv = overlapping.has(plant.instanceId);
             const isProx = !isOv && proximity.has(plant.instanceId);
-            const dim = filterType!=="all" && plant.type!==filterType;
+            const dim = filterType!=="all" && (filterType==="nFixer" ? !plant.nFixer : plant.type!==filterType);
             return (
               <g key={plant.instanceId} style={{ cursor:"grab", userSelect:"none" }}
                 opacity={dim?0.2:1}
@@ -845,6 +848,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                 {isSel && <circle r={17} fill="none" stroke={tc.border} strokeWidth="2"/>}
                 <circle r={11} fill={isOv?"#3a0a0a":tc.color} stroke={isOv?"#e05050":isProx?"#ff9544":tc.border} strokeWidth={isSel?2:1.2}/>
                 <text y={4} textAnchor="middle" fontSize="12" style={{pointerEvents:"none"}}>{plant.emoji}</text>
+                {plant.nFixer && <text x={9} y={-5} fontSize="8" style={{pointerEvents:"none"}}>⚡</text>}
                 <text y={20} textAnchor="middle" fontSize="7" style={{pointerEvents:"none"}}>{waterDrops(plant.water)}</text>
                 {isSel && (
                   <g style={{pointerEvents:"none"}}>
@@ -894,6 +898,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               <button onClick={()=>{onDelete(selectedPlant.instanceId);setSelected(null);}} style={btnS("#e05050")}>Delete</button>
               <button onClick={()=>setSelected(null)} style={{ background:"transparent", border:"none", color:"#d4edda88", fontSize:"14px", cursor:"pointer", padding:"0 4px" }}>✕</button>
             </div>
+            {selectedPlant.nFixer && <div style={{ color:"#c8e16a", fontSize:"9px", marginTop:"4px" }}>⚡ Nitrogen Fixer — improves soil fertility for neighboring plants</div>}
             {overlapping.has(selectedPlant.instanceId) && <div style={{ color:"#e05050", fontSize:"9px", marginTop:"4px" }}>Too close to another plant</div>}
             {proximity.has(selectedPlant.instanceId) && proximity.get(selectedPlant.instanceId).map((c,i) => (
               <div key={`p${i}`} style={{ color:"#ff9544", fontSize:"9px", marginTop:"4px", lineHeight:"1.4" }}>⚠ Near {c.name}: {c.reason}</div>
@@ -923,17 +928,19 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                 style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid #1a3320", borderRadius:"7px", padding:"7px 10px", color:"#d4edda", fontSize:"13px", outline:"none", fontFamily:"monospace", boxSizing:"border-box" }}/>
               <div style={{ display:"flex", flexWrap:"wrap", gap:"4px", marginTop:"6px" }}>
                 <button onClick={()=>setFilterType("all")} style={fBtnS("all",filterType,"#52b788")}>All</button>
-                {Object.entries(TYPE_META).map(([t,m])=>(
+                {Object.entries(TYPE_META).filter(([t])=>t!=="nFixer").map(([t,m])=>(
                   <button key={t} onClick={()=>setFilterType(t)} style={fBtnS(t,filterType,m.border)}>
                     {m.label.split(" ")[0]}
                   </button>
                 ))}
+                <button onClick={()=>setFilterType("nFixer")} style={fBtnS("nFixer",filterType,TYPE_META.nFixer.border)}>⚡ N-Fixer</button>
               </div>
             </div>
             <div style={{ flex:1, overflowY:"auto", padding:"8px" }}>
-              {Object.entries(TYPE_META).map(([type,meta])=>{
+              {Object.entries(TYPE_META).filter(([t])=>t!=="nFixer").map(([type,meta])=>{
                 const plants = filteredLibrary.filter(p=>p.type===type);
-                if (!plants.length || (filterType!=="all"&&filterType!==type)) return null;
+                if (!plants.length) return null;
+                if (filterType!=="all" && filterType!=="nFixer" && filterType!==type) return null;
                 return (
                   <div key={type} style={{ marginBottom:"10px" }}>
                     <div style={{ fontSize:"9px", letterSpacing:"2px", color:meta.border, marginBottom:"4px", paddingLeft:"3px" }}>{meta.label.toUpperCase()}</div>
@@ -944,8 +951,8 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                       >
                         <span style={{ fontSize:"22px", flexShrink:0 }}>{plant.emoji}</span>
                         <div style={{ overflow:"hidden", flex:1 }}>
-                          <div style={{ color:meta.text, fontSize:"13px" }}>{plant.name} <span style={{ fontSize:"10px" }}>{waterDrops(plant.water)}</span></div>
-                          <div style={{ color:`${meta.border}77`, fontSize:"10px" }}>spread:{plant.spread}ft h:{plant.height}ft</div>
+                          <div style={{ color:meta.text, fontSize:"13px" }}>{plant.name} <span style={{ fontSize:"10px" }}>{waterDrops(plant.water)}</span>{plant.nFixer && <span style={{ fontSize:"11px", marginLeft:"4px" }}>⚡</span>}</div>
+                          <div style={{ color:`${meta.border}77`, fontSize:"10px" }}>spread:{plant.spread}ft h:{plant.height}ft{plant.nFixer && <span style={{ marginLeft:"6px", padding:"1px 5px", borderRadius:"4px", background:`${TYPE_META.nFixer.color}cc`, color:TYPE_META.nFixer.text, fontSize:"9px" }}>N-Fixer</span>}</div>
                         </div>
                       </div>
                     ))}
@@ -968,6 +975,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               {TYPE_META[selectedPlant.type]?.label} · spread:{selectedPlant.spread}ft · h:{selectedPlant.height}ft
             </div>
             <div style={{ color:"#74c69d", fontSize:"10px", lineHeight:"1.4", marginBottom:"6px" }}>{selectedPlant.note}</div>
+            {selectedPlant.nFixer && <div style={{ color:"#c8e16a", fontSize:"9px", marginBottom:"5px" }}>⚡ Nitrogen Fixer — improves soil fertility for neighboring plants</div>}
             {overlapping.has(selectedPlant.instanceId) && <div style={{ color:"#e05050", fontSize:"9px", marginBottom:"5px" }}>Too close to another plant</div>}
             {proximity.has(selectedPlant.instanceId) && proximity.get(selectedPlant.instanceId).map((c,i) => (
               <div key={`p${i}`} style={{ color:"#ff9544", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
@@ -990,19 +998,21 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid #1a3320", borderRadius:"7px", padding:"5px 8px", color:"#d4edda", fontSize:"11px", outline:"none", fontFamily:"monospace", boxSizing:"border-box" }}/>
           <div style={{ display:"flex", flexWrap:"wrap", gap:"3px", marginTop:"5px" }}>
             <button onClick={()=>setFilterType("all")} style={fBtnS("all",filterType,"#52b788")}>All</button>
-            {Object.entries(TYPE_META).map(([t,m])=>(
+            {Object.entries(TYPE_META).filter(([t])=>t!=="nFixer").map(([t,m])=>(
               <button key={t} onClick={()=>setFilterType(t)} style={fBtnS(t,filterType,m.border)}>
                 {m.label.split(" ")[0]}
               </button>
             ))}
+            <button onClick={()=>setFilterType("nFixer")} style={fBtnS("nFixer",filterType,TYPE_META.nFixer.border)}>⚡ N-Fixer</button>
           </div>
         </div>
 
         <div style={{ flex:1, overflowY:"auto", padding:"6px" }}>
           <div style={{ fontSize:"8px", letterSpacing:"2px", color:"#40916c", marginBottom:"5px" }}>DRAG TO MAP · {filteredLibrary.length} plants</div>
-          {Object.entries(TYPE_META).map(([type,meta])=>{
+          {Object.entries(TYPE_META).filter(([t])=>t!=="nFixer").map(([type,meta])=>{
             const plants = filteredLibrary.filter(p=>p.type===type);
-            if (!plants.length || (filterType!=="all"&&filterType!==type)) return null;
+            if (!plants.length) return null;
+            if (filterType!=="all" && filterType!=="nFixer" && filterType!==type) return null;
             return (
               <div key={type} style={{ marginBottom:"7px" }}>
                 <div style={{ fontSize:"8px", letterSpacing:"2px", color:meta.border, marginBottom:"3px", paddingLeft:"3px" }}>{meta.label.toUpperCase()}</div>
@@ -1015,8 +1025,8 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                   >
                     <span style={{ fontSize:"14px", flexShrink:0 }}>{plant.emoji}</span>
                     <div style={{ overflow:"hidden", flex:1 }}>
-                      <div style={{ color:meta.text, fontSize:"10px", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{plant.name} <span style={{ fontSize:"8px" }}>{waterDrops(plant.water)}</span></div>
-                      <div style={{ color:`${meta.border}77`, fontSize:"8px" }}>spread:{plant.spread}ft h:{plant.height}ft</div>
+                      <div style={{ color:meta.text, fontSize:"10px", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{plant.name} <span style={{ fontSize:"8px" }}>{waterDrops(plant.water)}</span>{plant.nFixer && <span style={{ fontSize:"9px", marginLeft:"3px" }}>⚡</span>}</div>
+                      <div style={{ color:`${meta.border}77`, fontSize:"8px" }}>spread:{plant.spread}ft h:{plant.height}ft{plant.nFixer && <span style={{ marginLeft:"5px", padding:"0px 4px", borderRadius:"3px", background:`${TYPE_META.nFixer.color}cc`, color:TYPE_META.nFixer.text, fontSize:"7px" }}>N-Fixer</span>}</div>
                     </div>
                   </div>
                 ))}
