@@ -559,6 +559,15 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
   const [selected, setSelected] = useState(null);
   const [ghostPos, setGhostPos] = useState(null);
   const [canvasSize, setCanvasSize] = useState({ w: 1400, h: 900 });
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [armedPlant, setArmedPlant] = useState(null);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   useEffect(() => {
     const el = canvasRef.current;
@@ -568,7 +577,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [isMobile, paletteOpen]);
 
   const PAD = 58;
   const CVW = canvasSize.w, CVH = canvasSize.h;
@@ -735,12 +744,25 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
     (search===""||p.name.toLowerCase().includes(search.toLowerCase()))
   );
 
+  function handleCanvasClick(e) {
+    if (armedPlant) {
+      const pos = getSVGPos(e);
+      if (inTriangle(pos.x, pos.y)) {
+        const {fx,fy} = toFt(pos.x, pos.y);
+        if (fx>=0 && fx<=zone.widthFt && fy>=0 && fy<=zone.heightFt) onAdd(armedPlant, fx, fy);
+      }
+      setArmedPlant(null);
+      return;
+    }
+    setSelected(null);
+  }
+
   return (
-    <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
-      <div ref={canvasRef} style={{ flex:1, overflow:"hidden", background:"#080f09" }}
+    <div style={{ flex:1, display:"flex", overflow:"hidden", position:"relative" }}>
+      <div ref={canvasRef} style={{ flex:1, overflow:"hidden", background:"#080f09", position:"relative" }}
         onMouseMove={onMove2} onTouchMove={e=>{e.preventDefault();onMove2(e);}}
         onMouseUp={onUp} onTouchEnd={onUp}
-        onClick={()=>setSelected(null)}
+        onClick={handleCanvasClick}
       >
         <svg ref={svgRef} viewBox={`0 0 ${CVW} ${CVH}`}
           style={{ width:"100%", height:"100%", display:"block", cursor:draggingNew?"crosshair":draggingPlaced?"grabbing":"default" }}>
@@ -843,7 +865,94 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
         </svg>
       </div>
 
-      {/* Panel */}
+        {/* Mobile: armed plant indicator */}
+        {isMobile && armedPlant && (
+          <div style={{ position:"absolute", top:8, left:"50%", transform:"translateX(-50%)", background:"rgba(20,40,25,0.95)", border:"1px solid #52b788", borderRadius:"20px", padding:"6px 14px", display:"flex", alignItems:"center", gap:"8px", color:"#d8f3dc", fontSize:"12px", zIndex:5, fontFamily:"monospace" }}>
+            <span style={{ fontSize:"16px" }}>{armedPlant.emoji}</span>
+            <span>Tap canvas to place {armedPlant.name}</span>
+            <button onClick={e=>{e.stopPropagation();setArmedPlant(null);}} style={{ background:"transparent", border:"none", color:"#e05050", fontSize:"14px", cursor:"pointer", padding:"0 4px" }}>✕</button>
+          </div>
+        )}
+
+        {/* Mobile: selected plant chip */}
+        {isMobile && selectedPlant && !armedPlant && (
+          <div style={{ position:"absolute", top:8, left:8, right:8, background:`${TYPE_META[selectedPlant.type]?.color}ee`, border:`1px solid ${TYPE_META[selectedPlant.type]?.border}`, borderRadius:"10px", padding:"8px 10px", zIndex:5, fontFamily:"monospace" }} onClick={e=>e.stopPropagation()}>
+            <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+              <span style={{ fontSize:"18px" }}>{selectedPlant.emoji}</span>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ color:"#d8f3dc", fontSize:"12px", fontWeight:"bold", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{selectedPlant.name}</div>
+                <div style={{ color:TYPE_META[selectedPlant.type]?.text, fontSize:"9px" }}>
+                  {TYPE_META[selectedPlant.type]?.label} · {selectedPlant.spread}ft · {waterDrops(selectedPlant.water)}
+                </div>
+              </div>
+              <button onClick={()=>{onDelete(selectedPlant.instanceId);setSelected(null);}} style={btnS("#e05050")}>Delete</button>
+              <button onClick={()=>setSelected(null)} style={{ background:"transparent", border:"none", color:"#d4edda88", fontSize:"14px", cursor:"pointer", padding:"0 4px" }}>✕</button>
+            </div>
+            {overlapping.has(selectedPlant.instanceId) && <div style={{ color:"#e05050", fontSize:"9px", marginTop:"4px" }}>Too close to another plant</div>}
+            {proximity.has(selectedPlant.instanceId) && proximity.get(selectedPlant.instanceId).map((c,i) => (
+              <div key={`p${i}`} style={{ color:"#ff9544", fontSize:"9px", marginTop:"4px", lineHeight:"1.4" }}>⚠ Near {c.name}: {c.reason}</div>
+            ))}
+          </div>
+        )}
+
+        {/* Mobile: floating + button */}
+        {isMobile && !paletteOpen && !armedPlant && (
+          <button onClick={e=>{e.stopPropagation();setPaletteOpen(true);}}
+            style={{ position:"absolute", bottom:18, right:18, width:56, height:56, borderRadius:"50%", background:"#52b788", border:"none", color:"#0a140b", fontSize:"30px", fontWeight:"bold", cursor:"pointer", boxShadow:"0 4px 12px rgba(0,0,0,0.4)", zIndex:5, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            +
+          </button>
+        )}
+
+      {/* Mobile: slide-up palette drawer */}
+      {isMobile && paletteOpen && (
+        <>
+          <div onClick={()=>setPaletteOpen(false)} style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.5)", zIndex:10 }}/>
+          <div style={{ position:"absolute", left:0, right:0, bottom:0, height:"72%", background:"#0c1a0d", borderTop:"1px solid #1a3320", borderRadius:"14px 14px 0 0", display:"flex", flexDirection:"column", zIndex:11, boxShadow:"0 -4px 16px rgba(0,0,0,0.5)" }}>
+            <div style={{ display:"flex", alignItems:"center", padding:"10px 12px", borderBottom:"1px solid #1a3320" }}>
+              <div style={{ flex:1, fontSize:"11px", color:"#74c69d", fontFamily:"monospace", letterSpacing:"2px" }}>TAP A PLANT · {filteredLibrary.length}</div>
+              <button onClick={()=>setPaletteOpen(false)} style={btnS("#74c69d")}>Close</button>
+            </div>
+            <div style={{ padding:"8px 10px", borderBottom:"1px solid #1a3320", flexShrink:0 }}>
+              <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search plants..."
+                style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid #1a3320", borderRadius:"7px", padding:"7px 10px", color:"#d4edda", fontSize:"13px", outline:"none", fontFamily:"monospace", boxSizing:"border-box" }}/>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:"4px", marginTop:"6px" }}>
+                <button onClick={()=>setFilterType("all")} style={fBtnS("all",filterType,"#52b788")}>All</button>
+                {Object.entries(TYPE_META).map(([t,m])=>(
+                  <button key={t} onClick={()=>setFilterType(t)} style={fBtnS(t,filterType,m.border)}>
+                    {m.label.split(" ")[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div style={{ flex:1, overflowY:"auto", padding:"8px" }}>
+              {Object.entries(TYPE_META).map(([type,meta])=>{
+                const plants = filteredLibrary.filter(p=>p.type===type);
+                if (!plants.length || (filterType!=="all"&&filterType!==type)) return null;
+                return (
+                  <div key={type} style={{ marginBottom:"10px" }}>
+                    <div style={{ fontSize:"9px", letterSpacing:"2px", color:meta.border, marginBottom:"4px", paddingLeft:"3px" }}>{meta.label.toUpperCase()}</div>
+                    {plants.map(plant=>(
+                      <div key={plant.id}
+                        onClick={()=>{ setArmedPlant(plant); setPaletteOpen(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:"10px", padding:"10px 12px", borderRadius:"10px", marginBottom:"4px", background:`${meta.color}44`, border:`1px solid ${meta.border}28`, cursor:"pointer", userSelect:"none" }}
+                      >
+                        <span style={{ fontSize:"22px", flexShrink:0 }}>{plant.emoji}</span>
+                        <div style={{ overflow:"hidden", flex:1 }}>
+                          <div style={{ color:meta.text, fontSize:"13px" }}>{plant.name} <span style={{ fontSize:"10px" }}>{waterDrops(plant.water)}</span></div>
+                          <div style={{ color:`${meta.border}77`, fontSize:"10px" }}>spread:{plant.spread}ft h:{plant.height}ft</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Desktop sidebar panel */}
+      {!isMobile && (
       <div style={{ width:"228px", background:"#0c1a0d", borderLeft:"1px solid #1a3320", display:"flex", flexDirection:"column", flexShrink:0 }}>
         {selectedPlant ? (
           <div style={{ padding:"10px", borderBottom:"1px solid #1a3320", background:`${TYPE_META[selectedPlant.type]?.color}44`, flexShrink:0 }}>
@@ -916,6 +1025,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             : <span style={{color:"#52b788"}}>no overlaps</span>}
         </div>
       </div>
+      )}
     </div>
   );
 }
