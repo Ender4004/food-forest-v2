@@ -31,7 +31,7 @@ const PLANTS = [
   { id:"soursop",    name:"Soursop",               emoji:"💚", type:"subcanopy", spread:10, height:15, note:"Fast producer · loves humidity" },
   { id:"jaboticaba", name:"Jaboticaba",            emoji:"🍇", type:"subcanopy", spread:8,  height:11, note:"Fruits on trunk · buy largest" },
   { id:"starfruit",  name:"Starfruit",             emoji:"⭐", type:"subcanopy", spread:10, height:12, note:"Year-round · loves humidity" },
-  { id:"papaya",     name:"Papaya Solo",           emoji:"🍈", type:"subcanopy", spread:4,  height:11, note:"Fast · gap filler" },
+  { id:"papaya",     name:"Papaya Solo",           emoji:"🍈", type:"subcanopy", spread:4,  height:11, alleloRadius:6, note:"Fast · gap filler" },
   { id:"banana",     name:"Banana Williams",       emoji:"🍌", type:"subcanopy", spread:6,  height:14, note:"Clumping · prolific" },
   { id:"plantain",   name:"Dwarf Plantain",        emoji:"🍌", type:"subcanopy", spread:5,  height:10, note:"Colombian Dwarf" },
   { id:"elderberry", name:"Elderberry",            emoji:"🫐", type:"subcanopy", spread:6,  height:9,  note:"Immune · flower and berry tea" },
@@ -46,7 +46,7 @@ const PLANTS = [
   { id:"pigeonpea",  name:"Pigeon Pea",            emoji:"🌿", type:"shrub",     spread:4,  height:8,  note:"N-fixer pioneer · chop and drop" },
   { id:"chili",      name:"Hawaiian Chili Pepper", emoji:"🌶️", type:"shrub",     spread:3,  height:4,  note:"Self-seeds permanently" },
   { id:"roselle",    name:"Roselle Hibiscus",      emoji:"🌺", type:"shrub",     spread:4,  height:5,  note:"Hibiscus tea · vitamin C" },
-  { id:"lemongrass", name:"Lemongrass",            emoji:"🌾", type:"shrub",     spread:3,  height:4,  note:"Corner marker · deterrent · tea" },
+  { id:"lemongrass", name:"Lemongrass",            emoji:"🌾", type:"shrub",     spread:3,  height:4,  alleloRadius:5, note:"Corner marker · deterrent · tea" },
   { id:"citronella", name:"Citronella Grass",      emoji:"🌾", type:"shrub",     spread:3,  height:4,  note:"True citronella · mosquito deterrent" },
   { id:"lilikoi",    name:"Lilikoi Possum Purple", emoji:"💛", type:"vine",      spread:15, height:15, note:"Plant first · year-round" },
   { id:"chayote",    name:"Chayote",               emoji:"🥒", type:"vine",      spread:20, height:15, note:"100+ fruit per yr · plant whole" },
@@ -65,15 +65,15 @@ const PLANTS = [
   { id:"galangal",   name:"Galangal",              emoji:"🌱", type:"root",      spread:3,  height:4,  note:"Thai cooking · prolific wet" },
   { id:"cassava",    name:"Cassava",               emoji:"🥬", type:"root",      spread:3,  height:8,  note:"Rotate in ground · calorie crop" },
   { id:"kava",       name:"Kava Awa",              emoji:"🌿", type:"root",      spread:4,  height:5,  note:"Medicinal · ceremonial · 3-5yr" },
-  { id:"sweetpot",   name:"Sweet Potato Okinawan", emoji:"🍠", type:"ground",    spread:4,  height:1,  note:"Living mulch · edible vine and tuber" },
+  { id:"sweetpot",   name:"Sweet Potato Okinawan", emoji:"🍠", type:"ground",    spread:4,  height:1,  alleloRadius:3, note:"Living mulch · edible vine and tuber" },
   { id:"pineapple",  name:"Pineapple",             emoji:"🍍", type:"ground",    spread:2,  height:3,  note:"Free from store crowns" },
   { id:"peanutgrass",name:"Peanut Grass",          emoji:"🌾", type:"ground",    spread:2,  height:1,  note:"N-fixing living mulch · sunny" },
   { id:"okspinach",  name:"Okinawan Spinach",      emoji:"💜", type:"ground",    spread:2,  height:2,  note:"Living mulch · nutritious" },
   { id:"comfrey",    name:"Comfrey Bocking 14",    emoji:"🌿", type:"ground",    spread:3,  height:2,  note:"Around tree drip lines" },
-  { id:"nasturtium", name:"Nasturtium",            emoji:"🧡", type:"ground",    spread:3,  height:1,  note:"Trap crop · edible · vitamin C" },
+  { id:"nasturtium", name:"Nasturtium",            emoji:"🧡", type:"ground",    spread:3,  height:1,  alleloRadius:4, note:"Trap crop · edible · vitamin C" },
   { id:"marigold",   name:"African Marigold",      emoji:"🌼", type:"ground",    spread:2,  height:2,  note:"Repels nematodes and aphids" },
   { id:"creepthyme", name:"Creeping Thyme",        emoji:"🌿", type:"ground",    spread:2,  height:1,  note:"Path edges · foot traffic · tea" },
-  { id:"pennyroyal", name:"Pennyroyal",            emoji:"🌿", type:"ground",    spread:2,  height:1,  note:"Ant and flea deterrent" },
+  { id:"pennyroyal", name:"Pennyroyal",            emoji:"🌿", type:"ground",    spread:2,  height:1,  alleloRadius:4, note:"Ant and flea deterrent" },
   { id:"tulsi",      name:"Tulsi Holy Basil",      emoji:"🌸", type:"tea",       spread:3,  height:3,  note:"Adaptogen · stress · immune" },
   { id:"lemonbalm",  name:"Lemon Balm",            emoji:"🍋", type:"tea",       spread:3,  height:2,  note:"Calming · antiviral · part shade" },
   { id:"shisored",   name:"Shiso Red",             emoji:"🍁", type:"tea",       spread:2,  height:2,  note:"Omega-3 · self-seeds · understory" },
@@ -82,7 +82,7 @@ const PLANTS = [
   { id:"ashwag",     name:"Ashwagandha",           emoji:"🌿", type:"tea",       spread:3,  height:3,  note:"Adaptogen root · good drainage" },
   { id:"stevia",     name:"Stevia",                emoji:"🌿", type:"tea",       spread:2,  height:2,  note:"Natural sweetener · all teas" },
   { id:"peppermint", name:"Peppermint in pot",     emoji:"🌿", type:"tea",       spread:2,  height:2,  note:"KEEP IN POT - spreads aggressively" },
-  { id:"fennel",     name:"Fennel",                emoji:"🌿", type:"tea",       spread:3,  height:4,  note:"Digestive · self-seeds · edible" },
+  { id:"fennel",     name:"Fennel",                emoji:"🌿", type:"tea",       spread:3,  height:4,  alleloRadius:6, note:"Digestive · self-seeds · edible" },
   { id:"feverfew",   name:"Feverfew",              emoji:"🌼", type:"tea",       spread:2,  height:2,  note:"Migraine prevention · part shade" },
   { id:"mullein",    name:"Mullein",               emoji:"🌿", type:"tea",       spread:2,  height:5,  note:"Respiratory · biennial self-seeds" },
   { id:"echinacea",  name:"Echinacea",             emoji:"🌸", type:"tea",       spread:2,  height:3,  note:"Immune · needs good drainage" },
@@ -90,7 +90,7 @@ const PLANTS = [
   { id:"rosegeram",  name:"Rose Geranium",         emoji:"🌸", type:"aromatic",  spread:3,  height:3,  note:"Mosquito and aphid deterrent" },
   { id:"socgarlic",  name:"Society Garlic",        emoji:"💜", type:"aromatic",  spread:3,  height:2,  note:"Allium scent deters insects" },
   { id:"chives",     name:"Chives",                emoji:"🌿", type:"aromatic",  spread:2,  height:1,  note:"Deters aphids · handles shade" },
-  { id:"tansy",      name:"Tansy",                 emoji:"🌼", type:"aromatic",  spread:3,  height:3,  note:"Strong ant deterrent" },
+  { id:"tansy",      name:"Tansy",                 emoji:"🌼", type:"aromatic",  spread:3,  height:3,  alleloRadius:4, note:"Strong ant deterrent" },
   { id:"pandan",     name:"Pandan",                emoji:"🌿", type:"aromatic",  spread:4,  height:5,  note:"Ant deterrent · culinary tea" },
   { id:"vietcori",   name:"Vietnamese Coriander",  emoji:"🌿", type:"aromatic",  spread:2,  height:2,  note:"Perennial cilantro · moist shade" },
 ];
@@ -104,6 +104,42 @@ const CONFLICTING_PAIRS = new Set([
 function conflicts(t1, t2) {
   const key = t1 < t2 ? `${t1}|${t2}` : `${t2}|${t1}`;
   return CONFLICTING_PAIRS.has(key);
+}
+
+const CONFLICT_PAIRS = [
+  { id1:'fennel',      id2:'tulsi',       reason:'Fennel allelopathic — inhibits tulsi growth' },
+  { id1:'fennel',      id2:'lemonbalm',   reason:'Fennel suppresses lemon balm' },
+  { id1:'fennel',      id2:'shisored',    reason:'Fennel inhibits shiso' },
+  { id1:'fennel',      id2:'shisogrn',    reason:'Fennel inhibits shiso' },
+  { id1:'fennel',      id2:'vietcori',    reason:'Fennel inhibits coriander family' },
+  { id1:'fennel',      id2:'thaibasil',   reason:'Fennel inhibits basil' },
+  { id1:'fennel',      id2:'pigeonpea',   reason:'Fennel stunts legume growth' },
+  { id1:'fennel',      id2:'turmeric',    reason:'Fennel inhibits rhizome development' },
+  { id1:'fennel',      id2:'ginger',      reason:'Fennel inhibits ginger' },
+  { id1:'fennel',      id2:'taro',        reason:'Fennel allelopathic effect on taro' },
+  { id1:'fennel',      id2:'mugwort',     reason:'Fennel suppresses neighboring herbs' },
+  { id1:'papaya',      id2:'taro',        reason:'Papaya allelopathic within 6ft' },
+  { id1:'papaya',      id2:'turmeric',    reason:'Papaya root secretions inhibit rhizomes' },
+  { id1:'papaya',      id2:'ginger',      reason:'Papaya allelopathic within 6ft' },
+  { id1:'papaya',      id2:'mamaki',      reason:'Papaya suppresses understory within 6ft' },
+  { id1:'tansy',       id2:'tulsi',       reason:'Tansy oils suppress tulsi' },
+  { id1:'tansy',       id2:'lemonbalm',   reason:'Tansy suppresses lemon balm' },
+  { id1:'pennyroyal',  id2:'tulsi',       reason:'Pennyroyal dominates competing aromatics' },
+  { id1:'pennyroyal',  id2:'lemonbalm',   reason:'Pennyroyal suppresses lemon balm' },
+  { id1:'lemongrass',  id2:'moringa',     reason:'Lemongrass root secretions inhibit Moringa' },
+  { id1:'mango',       id2:'avsharwil',   reason:'Both heavy feeders, compete for same nutrients' },
+  { id1:'mango',       id2:'avmalama',    reason:'Both heavy feeders, compete for same nutrients' },
+  { id1:'soursop',     id2:'lychee',      reason:'Both susceptible to same fungal issues — clusters increase disease pressure' },
+  { id1:'sweetpot',    id2:'peanutgrass', reason:'Sweet potato vines will smother peanut grass' },
+  { id1:'nasturtium',  id2:'peanutgrass', reason:'Nasturtium spreads aggressively and smothers peanut grass' },
+  { id1:'lilikoi',     id2:'chayote',     reason:'Both extremely vigorous — will fight for same fence space, space 20ft apart' },
+  { id1:'dragonfruit', id2:'blackpepper', reason:'Dragon fruit root mass outcompetes pepper at same post' },
+];
+function pairReason(id1, id2) {
+  for (const c of CONFLICT_PAIRS) {
+    if ((c.id1===id1 && c.id2===id2) || (c.id1===id2 && c.id2===id1)) return c.reason;
+  }
+  return null;
 }
 
 const ZONE_DEFS = [
@@ -613,13 +649,27 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
   }, [draggingNew,draggingPlaced]);
 
   const overlapping = new Set();
+  const proximity = new Map();
+  function addProx(id, partner) {
+    if (!proximity.has(id)) proximity.set(id, []);
+    proximity.get(id).push(partner);
+  }
   for (let i=0;i<placed.length;i++) {
     for (let j=i+1;j<placed.length;j++) {
       const p1=placed[i],p2=placed[j];
-      if (!conflicts(p1.type, p2.type)) continue;
       const {sx:x1,sy:y1}=toSVG(p1.x,p1.y), {sx:x2,sy:y2}=toSVG(p2.x,p2.y);
+      const dist = Math.sqrt((x1-x2)**2+(y1-y2)**2);
       const r1=(p1.spread/2)*SC, r2=(p2.spread/2)*SC;
-      if (Math.sqrt((x1-x2)**2+(y1-y2)**2)<r1+r2) { overlapping.add(p1.instanceId); overlapping.add(p2.instanceId); }
+      if (conflicts(p1.type, p2.type) && dist < r1+r2) {
+        overlapping.add(p1.instanceId); overlapping.add(p2.instanceId);
+      }
+      const reason = pairReason(p1.id, p2.id);
+      const reach1 = (p1.alleloRadius ?? p1.spread/2) * SC;
+      const reach2 = (p2.alleloRadius ?? p2.spread/2) * SC;
+      if (reason && dist < reach1 + reach2) {
+        addProx(p1.instanceId, { instanceId:p2.instanceId, name:p2.name, reason });
+        addProx(p2.instanceId, { instanceId:p1.instanceId, name:p1.name, reason });
+      }
     }
   }
 
@@ -710,15 +760,30 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               if (plant.type==="vine") return null;
               const tc = TYPE_META[plant.type]||TYPE_META.shrub;
               const {sx,sy} = toSVG(plant.x,plant.y);
-              const r = (plant.spread/2)*SC;
               const isOv = overlapping.has(plant.instanceId);
+              const isProx = proximity.has(plant.instanceId);
               const isSel = selected===plant.instanceId;
               const dim = filterType!=="all" && plant.type!==filterType;
+              if (plant.alleloRadius) {
+                const r = plant.alleloRadius * SC;
+                const active = isOv || isProx;
+                return (
+                  <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
+                    fill={active?"rgba(220,50,50,0.15)":"rgba(220,50,50,0.05)"}
+                    stroke="#e05050"
+                    strokeWidth={isSel?1.6:1}
+                    strokeDasharray="5,3"
+                    opacity={dim?0.2:1}/>
+                );
+              }
+              const r = (plant.spread/2)*SC;
+              const showProx = isProx && !isOv;
+              const fill = isOv?"rgba(220,50,50,0.13)":showProx?"rgba(255,149,68,0.13)":`rgba(${hexRgb(tc.color)},${tc.circleOpacity})`;
+              const stroke = isOv?"#e05050":showProx?"#ff9544":isSel?tc.border:`${tc.border}33`;
               return (
                 <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
-                  fill={isOv?"rgba(220,50,50,0.13)":`rgba(${hexRgb(tc.color)},${tc.circleOpacity})`}
-                  stroke={isOv?"#e05050":isSel?tc.border:`${tc.border}33`}
-                  strokeWidth={isSel?1.5:0.8} strokeDasharray={isOv?"4,2":""}
+                  fill={fill} stroke={stroke}
+                  strokeWidth={isSel?1.5:0.8} strokeDasharray={isOv||showProx?"4,2":""}
                   opacity={dim?0.2:1}/>
               );
             })}
@@ -730,6 +795,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             const {sx,sy} = toSVG(plant.x,plant.y);
             const isSel = selected===plant.instanceId;
             const isOv = overlapping.has(plant.instanceId);
+            const isProx = !isOv && proximity.has(plant.instanceId);
             const dim = filterType!=="all" && plant.type!==filterType;
             return (
               <g key={plant.instanceId} style={{ cursor:"grab", userSelect:"none" }}
@@ -740,7 +806,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                 transform={`translate(${sx},${sy})`}
               >
                 {isSel && <circle r={17} fill="none" stroke={tc.border} strokeWidth="2"/>}
-                <circle r={11} fill={isOv?"#3a0a0a":tc.color} stroke={isOv?"#e05050":tc.border} strokeWidth={isSel?2:1.2}/>
+                <circle r={11} fill={isOv?"#3a0a0a":tc.color} stroke={isOv?"#e05050":isProx?"#ff9544":tc.border} strokeWidth={isSel?2:1.2}/>
                 <text y={4} textAnchor="middle" fontSize="12" style={{pointerEvents:"none"}}>{plant.emoji}</text>
                 {isSel && (
                   <g style={{pointerEvents:"none"}}>
@@ -778,6 +844,11 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             </div>
             <div style={{ color:"#74c69d", fontSize:"10px", lineHeight:"1.4", marginBottom:"6px" }}>{selectedPlant.note}</div>
             {overlapping.has(selectedPlant.instanceId) && <div style={{ color:"#e05050", fontSize:"9px", marginBottom:"5px" }}>Too close to another plant</div>}
+            {proximity.has(selectedPlant.instanceId) && proximity.get(selectedPlant.instanceId).map((c,i) => (
+              <div key={i} style={{ color:"#ff9544", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
+                ⚠ Near {c.name}: {c.reason}
+              </div>
+            ))}
             <button onClick={()=>{onDelete(selectedPlant.instanceId);setSelected(null);}}
               style={{ ...btnS("#e05050"), width:"100%", textAlign:"center", padding:"6px" }}>
               Delete (or press Del key)
