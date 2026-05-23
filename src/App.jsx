@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 const TYPE_META = {
-  canopy:    { label: "Canopy",        color: "#1a4a2e", border: "#52b788", text: "#95d5b2", circleOpacity: 0.13 },
+  canopy:    { label: "Canopy",        color: "#1a4a2e", border: "#52b788", text: "#95d5b2", circleOpacity: 0.25 },
   subcanopy: { label: "Sub-Canopy",    color: "#2d6a4f", border: "#74c69d", text: "#b7e4c7", circleOpacity: 0.18 },
   shrub:     { label: "Shrub",         color: "#40916c", border: "#95d5b2", text: "#d8f3dc", circleOpacity: 0.22 },
   vine:      { label: "Vine",          color: "#7c4a00", border: "#f4a261", text: "#fff0d0", circleOpacity: 0 },
@@ -12,87 +12,87 @@ const TYPE_META = {
 };
 
 const PLANTS = [
-  { id:"avsharwil",  name:"Avocado Sharwil",      emoji:"🥑", type:"canopy",    spread:13, height:15, note:"Type A · Grafted · Sept–Mar" },
-  { id:"avmalama",   name:"Avocado Malama",        emoji:"🥑", type:"canopy",    spread:13, height:15, note:"Type B pollinator · Grafted" },
-  { id:"avdwarf",    name:"Dwarf Avocado",         emoji:"🥑", type:"canopy",    spread:8,  height:9,  note:"Little Cado · shelf · under 10ft" },
-  { id:"lychee",     name:"Lychee Kaimana",        emoji:"🍈", type:"canopy",    spread:15, height:20, note:"Grafted · cool winter to fruit" },
-  { id:"longan",     name:"Longan Kohala",         emoji:"🫐", type:"canopy",    spread:18, height:22, note:"Grafted · Jul–Sep harvest" },
-  { id:"mango",      name:"Mango Rapoza",          emoji:"🥭", type:"canopy",    spread:15, height:15, note:"Managed · anthracnose resistant" },
-  { id:"breadfruit", name:"Breadfruit Maafala",    emoji:"🍞", type:"canopy",    spread:15, height:20, note:"Compact Polynesian variety" },
-  { id:"coconut",    name:"Coconut Maypan Dwarf",  emoji:"🥥", type:"canopy",    spread:12, height:22, note:"Dwarf · 3-4 yrs to produce" },
-  { id:"inga",       name:"Inga Ice Cream Bean",   emoji:"🍦", type:"canopy",    spread:15, height:15, note:"Pollard to 15ft · N-fixer · coffee shade" },
-  { id:"gliricidia", name:"Gliricidia",            emoji:"🌸", type:"canopy",    spread:8,  height:10, note:"Coppice to 8ft · N-fixer · chop and drop" },
-  { id:"vitex",      name:"Vitex",                 emoji:"💜", type:"canopy",    spread:10, height:12, note:"Hormonal balance · purple flowers" },
-  { id:"citlemon",   name:"Meyer Lemon dwarf",     emoji:"🍋", type:"canopy",    spread:7,  height:7,  note:"Dwarf grafted · shelf" },
-  { id:"citkumquat", name:"Kumquat dwarf",         emoji:"🟠", type:"canopy",    spread:6,  height:7,  note:"Dwarf · shelf" },
-  { id:"citkaffir",  name:"Kaffir Lime dwarf",     emoji:"🍋", type:"canopy",    spread:6,  height:7,  note:"Dwarf grafted · culinary leaves" },
-  { id:"cittang",    name:"Tangerine dwarf",        emoji:"🍊", type:"canopy",    spread:7,  height:7,  note:"Dwarf grafted · shelf" },
-  { id:"rollinia",   name:"Rollinia",              emoji:"🍏", type:"subcanopy", spread:12, height:15, note:"Custard fruit · loves rain" },
-  { id:"soursop",    name:"Soursop",               emoji:"💚", type:"subcanopy", spread:10, height:15, note:"Fast producer · loves humidity" },
-  { id:"jaboticaba", name:"Jaboticaba",            emoji:"🍇", type:"subcanopy", spread:8,  height:11, note:"Fruits on trunk · buy largest" },
-  { id:"starfruit",  name:"Starfruit",             emoji:"⭐", type:"subcanopy", spread:10, height:12, note:"Year-round · loves humidity" },
-  { id:"papaya",     name:"Papaya Solo",           emoji:"🍈", type:"subcanopy", spread:4,  height:11, alleloRadius:6, note:"Fast · gap filler" },
-  { id:"banana",     name:"Banana Williams",       emoji:"🍌", type:"subcanopy", spread:6,  height:14, note:"Clumping · prolific" },
-  { id:"plantain",   name:"Dwarf Plantain",        emoji:"🍌", type:"subcanopy", spread:5,  height:10, note:"Colombian Dwarf" },
-  { id:"elderberry", name:"Elderberry",            emoji:"🫐", type:"subcanopy", spread:6,  height:9,  note:"Immune · flower and berry tea" },
-  { id:"noni",       name:"Noni",                  emoji:"🟡", type:"subcanopy", spread:8,  height:10, note:"Traditional Hawaiian medicine" },
-  { id:"cinnamon",   name:"Cinnamon Ceylon",       emoji:"🌿", type:"subcanopy", spread:8,  height:10, note:"True cinnamon · bark harvest" },
-  { id:"moringa",    name:"Moringa PKM-1",         emoji:"🌱", type:"shrub",     spread:4,  height:6,  note:"Cut monthly · N-fixer · leaf crop" },
-  { id:"mamaki",     name:"Mamaki",                emoji:"🍃", type:"shrub",     spread:6,  height:9,  note:"Endemic Hawaiian tea · wet understory" },
-  { id:"coffee",     name:"Coffee Caturra",        emoji:"☕", type:"shrub",     spread:5,  height:7,  note:"Part shade · Haiku ideal" },
-  { id:"katuk",      name:"Katuk",                 emoji:"🌿", type:"shrub",     spread:4,  height:6,  note:"High protein leaf · part shade" },
-  { id:"acerola",    name:"Acerola Cherry",        emoji:"🍒", type:"shrub",     spread:8,  height:8,  note:"Extremely high vitamin C" },
-  { id:"mulberry",   name:"Mulberry Dwarf",        emoji:"🫐", type:"shrub",     spread:8,  height:8,  note:"Year-round fruit · fast" },
-  { id:"pigeonpea",  name:"Pigeon Pea",            emoji:"🌿", type:"shrub",     spread:4,  height:8,  note:"N-fixer pioneer · chop and drop" },
-  { id:"chili",      name:"Hawaiian Chili Pepper", emoji:"🌶️", type:"shrub",     spread:3,  height:4,  note:"Self-seeds permanently" },
-  { id:"roselle",    name:"Roselle Hibiscus",      emoji:"🌺", type:"shrub",     spread:4,  height:5,  note:"Hibiscus tea · vitamin C" },
-  { id:"lemongrass", name:"Lemongrass",            emoji:"🌾", type:"shrub",     spread:3,  height:4,  alleloRadius:5, note:"Corner marker · deterrent · tea" },
-  { id:"citronella", name:"Citronella Grass",      emoji:"🌾", type:"shrub",     spread:3,  height:4,  note:"True citronella · mosquito deterrent" },
-  { id:"lilikoi",    name:"Lilikoi Possum Purple", emoji:"💛", type:"vine",      spread:15, height:15, note:"Plant first · year-round" },
-  { id:"chayote",    name:"Chayote",               emoji:"🥒", type:"vine",      spread:20, height:15, note:"100+ fruit per yr · plant whole" },
-  { id:"dragonfruit",name:"Dragon Fruit",          emoji:"🐉", type:"vine",      spread:6,  height:8,  note:"Post anchor · architectural" },
-  { id:"vanilla",    name:"Vanilla Planifolia",    emoji:"🌸", type:"vine",      spread:10, height:12, note:"Hand pollinate · high value" },
-  { id:"wingedbean", name:"Winged Bean",           emoji:"🫘", type:"vine",      spread:8,  height:8,  note:"N-fixer · all parts edible" },
-  { id:"longbean",   name:"Long Bean",             emoji:"🫛", type:"vine",      spread:6,  height:6,  note:"Fast · prolific · direct sow" },
-  { id:"blackpepper",name:"Black Peppercorn",      emoji:"🖤", type:"vine",      spread:8,  height:10, note:"Climbs posts · high value" },
-  { id:"bpea",       name:"Blue Butterfly Pea",    emoji:"💙", type:"vine",      spread:10, height:10, note:"Blue tea · N-fixer · calming" },
-  { id:"passflower", name:"Passionflower",         emoji:"💜", type:"vine",      spread:12, height:10, note:"Sleep tea · calming" },
-  { id:"catsclw",    name:"Cats Claw",             emoji:"🌿", type:"vine",      spread:15, height:15, note:"Immune · anti-inflammatory" },
-  { id:"schisandra", name:"Schisandra",            emoji:"🔴", type:"vine",      spread:10, height:10, note:"Adaptogen · five-flavor berry tea" },
-  { id:"taro",       name:"Taro Lehua Maoli",      emoji:"🌿", type:"root",      spread:3,  height:4,  note:"Wettest area · staple carb" },
-  { id:"turmeric",   name:"Turmeric",              emoji:"🟡", type:"root",      spread:2,  height:3,  note:"High value · harvest Nov-Jan" },
-  { id:"ginger",     name:"Ginger Hawaiian White", emoji:"🫚", type:"root",      spread:2,  height:3,  note:"Culinary and medicinal" },
-  { id:"galangal",   name:"Galangal",              emoji:"🌱", type:"root",      spread:3,  height:4,  note:"Thai cooking · prolific wet" },
-  { id:"cassava",    name:"Cassava",               emoji:"🥬", type:"root",      spread:3,  height:8,  note:"Rotate in ground · calorie crop" },
-  { id:"kava",       name:"Kava Awa",              emoji:"🌿", type:"root",      spread:4,  height:5,  note:"Medicinal · ceremonial · 3-5yr" },
-  { id:"sweetpot",   name:"Sweet Potato Okinawan", emoji:"🍠", type:"ground",    spread:4,  height:1,  alleloRadius:3, note:"Living mulch · edible vine and tuber" },
-  { id:"pineapple",  name:"Pineapple",             emoji:"🍍", type:"ground",    spread:2,  height:3,  note:"Free from store crowns" },
-  { id:"peanutgrass",name:"Peanut Grass",          emoji:"🌾", type:"ground",    spread:2,  height:1,  note:"N-fixing living mulch · sunny" },
-  { id:"okspinach",  name:"Okinawan Spinach",      emoji:"💜", type:"ground",    spread:2,  height:2,  note:"Living mulch · nutritious" },
-  { id:"comfrey",    name:"Comfrey Bocking 14",    emoji:"🌿", type:"ground",    spread:3,  height:2,  note:"Around tree drip lines" },
-  { id:"nasturtium", name:"Nasturtium",            emoji:"🧡", type:"ground",    spread:3,  height:1,  alleloRadius:4, note:"Trap crop · edible · vitamin C" },
-  { id:"marigold",   name:"African Marigold",      emoji:"🌼", type:"ground",    spread:2,  height:2,  note:"Repels nematodes and aphids" },
-  { id:"creepthyme", name:"Creeping Thyme",        emoji:"🌿", type:"ground",    spread:2,  height:1,  note:"Path edges · foot traffic · tea" },
-  { id:"pennyroyal", name:"Pennyroyal",            emoji:"🌿", type:"ground",    spread:2,  height:1,  alleloRadius:4, note:"Ant and flea deterrent" },
-  { id:"tulsi",      name:"Tulsi Holy Basil",      emoji:"🌸", type:"tea",       spread:3,  height:3,  note:"Adaptogen · stress · immune" },
-  { id:"lemonbalm",  name:"Lemon Balm",            emoji:"🍋", type:"tea",       spread:3,  height:2,  note:"Calming · antiviral · part shade" },
-  { id:"shisored",   name:"Shiso Red",             emoji:"🍁", type:"tea",       spread:2,  height:2,  note:"Omega-3 · self-seeds · understory" },
-  { id:"shisogrn",   name:"Shiso Green",           emoji:"🌿", type:"tea",       spread:2,  height:2,  note:"Productive in shade" },
-  { id:"mugwort",    name:"Okinawa Mugwort",       emoji:"🌿", type:"tea",       spread:3,  height:3,  note:"Digestive · anti-inflammatory" },
-  { id:"ashwag",     name:"Ashwagandha",           emoji:"🌿", type:"tea",       spread:3,  height:3,  note:"Adaptogen root · good drainage" },
-  { id:"stevia",     name:"Stevia",                emoji:"🌿", type:"tea",       spread:2,  height:2,  note:"Natural sweetener · all teas" },
-  { id:"peppermint", name:"Peppermint in pot",     emoji:"🌿", type:"tea",       spread:2,  height:2,  note:"KEEP IN POT - spreads aggressively" },
-  { id:"fennel",     name:"Fennel",                emoji:"🌿", type:"tea",       spread:3,  height:4,  alleloRadius:6, note:"Digestive · self-seeds · edible" },
-  { id:"feverfew",   name:"Feverfew",              emoji:"🌼", type:"tea",       spread:2,  height:2,  note:"Migraine prevention · part shade" },
-  { id:"mullein",    name:"Mullein",               emoji:"🌿", type:"tea",       spread:2,  height:5,  note:"Respiratory · biennial self-seeds" },
-  { id:"echinacea",  name:"Echinacea",             emoji:"🌸", type:"tea",       spread:2,  height:3,  note:"Immune · needs good drainage" },
-  { id:"thaibasil",  name:"Thai Basil",            emoji:"🌿", type:"aromatic",  spread:2,  height:2,  note:"Perennial · repels aphids" },
-  { id:"rosegeram",  name:"Rose Geranium",         emoji:"🌸", type:"aromatic",  spread:3,  height:3,  note:"Mosquito and aphid deterrent" },
-  { id:"socgarlic",  name:"Society Garlic",        emoji:"💜", type:"aromatic",  spread:3,  height:2,  note:"Allium scent deters insects" },
-  { id:"chives",     name:"Chives",                emoji:"🌿", type:"aromatic",  spread:2,  height:1,  note:"Deters aphids · handles shade" },
-  { id:"tansy",      name:"Tansy",                 emoji:"🌼", type:"aromatic",  spread:3,  height:3,  alleloRadius:4, note:"Strong ant deterrent" },
-  { id:"pandan",     name:"Pandan",                emoji:"🌿", type:"aromatic",  spread:4,  height:5,  note:"Ant deterrent · culinary tea" },
-  { id:"vietcori",   name:"Vietnamese Coriander",  emoji:"🌿", type:"aromatic",  spread:2,  height:2,  note:"Perennial cilantro · moist shade" },
+  { id:"avsharwil",  name:"Avocado Sharwil",      emoji:"🥑", type:"canopy",    spread:13, height:15, water:"moderate", note:"Type A · Grafted · Sept–Mar" },
+  { id:"avmalama",   name:"Avocado Malama",        emoji:"🥑", type:"canopy",    spread:13, height:15, water:"moderate", note:"Type B pollinator · Grafted" },
+  { id:"avdwarf",    name:"Dwarf Avocado",         emoji:"🥑", type:"canopy",    spread:8,  height:9,  water:"moderate", note:"Little Cado · shelf · under 10ft" },
+  { id:"lychee",     name:"Lychee Kaimana",        emoji:"🍈", type:"canopy",    spread:15, height:20, water:"moderate", note:"Grafted · cool winter to fruit" },
+  { id:"longan",     name:"Longan Kohala",         emoji:"🫐", type:"canopy",    spread:18, height:22, water:"moderate", note:"Grafted · Jul–Sep harvest" },
+  { id:"mango",      name:"Mango Rapoza",          emoji:"🥭", type:"canopy",    spread:15, height:15, water:"moderate", note:"Managed · anthracnose resistant" },
+  { id:"breadfruit", name:"Breadfruit Maafala",    emoji:"🍞", type:"canopy",    spread:15, height:20, water:"moderate", note:"Compact Polynesian variety" },
+  { id:"coconut",    name:"Coconut Maypan Dwarf",  emoji:"🥥", type:"canopy",    spread:12, height:22, water:"moderate", note:"Dwarf · 3-4 yrs to produce" },
+  { id:"inga",       name:"Inga Ice Cream Bean",   emoji:"🍦", type:"canopy",    spread:15, height:15, water:"moderate", note:"Pollard to 15ft · N-fixer · coffee shade" },
+  { id:"gliricidia", name:"Gliricidia",            emoji:"🌸", type:"canopy",    spread:8,  height:10, water:"moderate", note:"Coppice to 8ft · N-fixer · chop and drop" },
+  { id:"vitex",      name:"Vitex",                 emoji:"💜", type:"canopy",    spread:10, height:12, water:"moderate", note:"Hormonal balance · purple flowers" },
+  { id:"citlemon",   name:"Meyer Lemon dwarf",     emoji:"🍋", type:"canopy",    spread:7,  height:7,  water:"moderate", note:"Dwarf grafted · shelf" },
+  { id:"citkumquat", name:"Kumquat dwarf",         emoji:"🟠", type:"canopy",    spread:6,  height:7,  water:"moderate", note:"Dwarf · shelf" },
+  { id:"citkaffir",  name:"Kaffir Lime dwarf",     emoji:"🍋", type:"canopy",    spread:6,  height:7,  water:"moderate", note:"Dwarf grafted · culinary leaves" },
+  { id:"cittang",    name:"Tangerine dwarf",        emoji:"🍊", type:"canopy",    spread:7,  height:7,  water:"moderate", note:"Dwarf grafted · shelf" },
+  { id:"rollinia",   name:"Rollinia",              emoji:"🍏", type:"subcanopy", spread:12, height:15, water:"high", note:"Custard fruit · loves rain" },
+  { id:"soursop",    name:"Soursop",               emoji:"💚", type:"subcanopy", spread:10, height:15, water:"high", note:"Fast producer · loves humidity" },
+  { id:"jaboticaba", name:"Jaboticaba",            emoji:"🍇", type:"subcanopy", spread:8,  height:11, water:"moderate", note:"Fruits on trunk · buy largest" },
+  { id:"starfruit",  name:"Starfruit",             emoji:"⭐", type:"subcanopy", spread:10, height:12, water:"moderate", note:"Year-round · loves humidity" },
+  { id:"papaya",     name:"Papaya Solo",           emoji:"🍈", type:"subcanopy", spread:4,  height:11, alleloRadius:6, water:"moderate", note:"Fast · gap filler" },
+  { id:"banana",     name:"Banana Williams",       emoji:"🍌", type:"subcanopy", spread:6,  height:14, water:"moderate", note:"Clumping · prolific" },
+  { id:"plantain",   name:"Dwarf Plantain",        emoji:"🍌", type:"subcanopy", spread:5,  height:10, water:"moderate", note:"Colombian Dwarf" },
+  { id:"elderberry", name:"Elderberry",            emoji:"🫐", type:"subcanopy", spread:6,  height:9,  water:"high", note:"Immune · flower and berry tea" },
+  { id:"noni",       name:"Noni",                  emoji:"🟡", type:"subcanopy", spread:8,  height:10, water:"moderate", note:"Traditional Hawaiian medicine" },
+  { id:"cinnamon",   name:"Cinnamon Ceylon",       emoji:"🌿", type:"subcanopy", spread:8,  height:10, water:"moderate", note:"True cinnamon · bark harvest" },
+  { id:"moringa",    name:"Moringa PKM-1",         emoji:"🌱", type:"shrub",     spread:4,  height:6,  water:"moderate", note:"Cut monthly · N-fixer · leaf crop" },
+  { id:"mamaki",     name:"Mamaki",                emoji:"🍃", type:"shrub",     spread:6,  height:9,  water:"high", note:"Endemic Hawaiian tea · wet understory" },
+  { id:"coffee",     name:"Coffee Caturra",        emoji:"☕", type:"shrub",     spread:5,  height:7,  water:"moderate", note:"Part shade · Haiku ideal" },
+  { id:"katuk",      name:"Katuk",                 emoji:"🌿", type:"shrub",     spread:4,  height:6,  water:"moderate", note:"High protein leaf · part shade" },
+  { id:"acerola",    name:"Acerola Cherry",        emoji:"🍒", type:"shrub",     spread:8,  height:8,  water:"moderate", note:"Extremely high vitamin C" },
+  { id:"mulberry",   name:"Mulberry Dwarf",        emoji:"🫐", type:"shrub",     spread:8,  height:8,  water:"moderate", note:"Year-round fruit · fast" },
+  { id:"pigeonpea",  name:"Pigeon Pea",            emoji:"🌿", type:"shrub",     spread:4,  height:8,  water:"moderate", note:"N-fixer pioneer · chop and drop" },
+  { id:"chili",      name:"Hawaiian Chili Pepper", emoji:"🌶️", type:"shrub",     spread:3,  height:4,  water:"low", note:"Self-seeds permanently" },
+  { id:"roselle",    name:"Roselle Hibiscus",      emoji:"🌺", type:"shrub",     spread:4,  height:5,  water:"moderate", note:"Hibiscus tea · vitamin C" },
+  { id:"lemongrass", name:"Lemongrass",            emoji:"🌾", type:"shrub",     spread:3,  height:4,  alleloRadius:5, water:"low", note:"Corner marker · deterrent · tea" },
+  { id:"citronella", name:"Citronella Grass",      emoji:"🌾", type:"shrub",     spread:3,  height:4,  water:"low", note:"True citronella · mosquito deterrent" },
+  { id:"lilikoi",    name:"Lilikoi Possum Purple", emoji:"💛", type:"vine",      spread:15, height:15, water:"moderate", note:"Plant first · year-round" },
+  { id:"chayote",    name:"Chayote",               emoji:"🥒", type:"vine",      spread:20, height:15, water:"moderate", note:"100+ fruit per yr · plant whole" },
+  { id:"dragonfruit",name:"Dragon Fruit",          emoji:"🐉", type:"vine",      spread:6,  height:8,  water:"low", note:"Post anchor · architectural" },
+  { id:"vanilla",    name:"Vanilla Planifolia",    emoji:"🌸", type:"vine",      spread:10, height:12, water:"moderate", note:"Hand pollinate · high value" },
+  { id:"wingedbean", name:"Winged Bean",           emoji:"🫘", type:"vine",      spread:8,  height:8,  water:"moderate", note:"N-fixer · all parts edible" },
+  { id:"longbean",   name:"Long Bean",             emoji:"🫛", type:"vine",      spread:6,  height:6,  water:"low", note:"Fast · prolific · direct sow" },
+  { id:"blackpepper",name:"Black Peppercorn",      emoji:"🖤", type:"vine",      spread:8,  height:10, water:"low", note:"Climbs posts · high value" },
+  { id:"bpea",       name:"Blue Butterfly Pea",    emoji:"💙", type:"vine",      spread:10, height:10, water:"moderate", note:"Blue tea · N-fixer · calming" },
+  { id:"passflower", name:"Passionflower",         emoji:"💜", type:"vine",      spread:12, height:10, water:"moderate", note:"Sleep tea · calming" },
+  { id:"catsclw",    name:"Cats Claw",             emoji:"🌿", type:"vine",      spread:15, height:15, water:"high", note:"Immune · anti-inflammatory" },
+  { id:"schisandra", name:"Schisandra",            emoji:"🔴", type:"vine",      spread:10, height:10, water:"moderate", note:"Adaptogen · five-flavor berry tea" },
+  { id:"taro",       name:"Taro Lehua Maoli",      emoji:"🌿", type:"root",      spread:3,  height:4,  water:"high", note:"Wettest area · staple carb" },
+  { id:"turmeric",   name:"Turmeric",              emoji:"🟡", type:"root",      spread:2,  height:3,  water:"high", note:"High value · harvest Nov-Jan" },
+  { id:"ginger",     name:"Ginger Hawaiian White", emoji:"🫚", type:"root",      spread:2,  height:3,  water:"high", note:"Culinary and medicinal" },
+  { id:"galangal",   name:"Galangal",              emoji:"🌱", type:"root",      spread:3,  height:4,  water:"high", note:"Thai cooking · prolific wet" },
+  { id:"cassava",    name:"Cassava",               emoji:"🥬", type:"root",      spread:3,  height:8,  water:"low", note:"Rotate in ground · calorie crop" },
+  { id:"kava",       name:"Kava Awa",              emoji:"🌿", type:"root",      spread:4,  height:5,  water:"high", note:"Medicinal · ceremonial · 3-5yr" },
+  { id:"sweetpot",   name:"Sweet Potato Okinawan", emoji:"🍠", type:"ground",    spread:4,  height:1,  alleloRadius:3, water:"low", note:"Living mulch · edible vine and tuber" },
+  { id:"pineapple",  name:"Pineapple",             emoji:"🍍", type:"ground",    spread:2,  height:3,  water:"low", note:"Free from store crowns" },
+  { id:"peanutgrass",name:"Peanut Grass",          emoji:"🌾", type:"ground",    spread:2,  height:1,  water:"low", note:"N-fixing living mulch · sunny" },
+  { id:"okspinach",  name:"Okinawan Spinach",      emoji:"💜", type:"ground",    spread:2,  height:2,  water:"high", note:"Living mulch · nutritious" },
+  { id:"comfrey",    name:"Comfrey Bocking 14",    emoji:"🌿", type:"ground",    spread:3,  height:2,  water:"moderate", note:"Around tree drip lines" },
+  { id:"nasturtium", name:"Nasturtium",            emoji:"🧡", type:"ground",    spread:3,  height:1,  alleloRadius:4, water:"low", note:"Trap crop · edible · vitamin C" },
+  { id:"marigold",   name:"African Marigold",      emoji:"🌼", type:"ground",    spread:2,  height:2,  water:"low", note:"Repels nematodes and aphids" },
+  { id:"creepthyme", name:"Creeping Thyme",        emoji:"🌿", type:"ground",    spread:2,  height:1,  water:"low", note:"Path edges · foot traffic · tea" },
+  { id:"pennyroyal", name:"Pennyroyal",            emoji:"🌿", type:"ground",    spread:2,  height:1,  alleloRadius:4, water:"low", note:"Ant and flea deterrent" },
+  { id:"tulsi",      name:"Tulsi Holy Basil",      emoji:"🌸", type:"tea",       spread:3,  height:3,  water:"moderate", note:"Adaptogen · stress · immune" },
+  { id:"lemonbalm",  name:"Lemon Balm",            emoji:"🍋", type:"tea",       spread:3,  height:2,  water:"high", note:"Calming · antiviral · part shade" },
+  { id:"shisored",   name:"Shiso Red",             emoji:"🍁", type:"tea",       spread:2,  height:2,  water:"high", note:"Omega-3 · self-seeds · understory" },
+  { id:"shisogrn",   name:"Shiso Green",           emoji:"🌿", type:"tea",       spread:2,  height:2,  water:"high", note:"Productive in shade" },
+  { id:"mugwort",    name:"Okinawa Mugwort",       emoji:"🌿", type:"tea",       spread:3,  height:3,  water:"moderate", note:"Digestive · anti-inflammatory" },
+  { id:"ashwag",     name:"Ashwagandha",           emoji:"🌿", type:"tea",       spread:3,  height:3,  water:"low", note:"Adaptogen root · good drainage" },
+  { id:"stevia",     name:"Stevia",                emoji:"🌿", type:"tea",       spread:2,  height:2,  water:"moderate", note:"Natural sweetener · all teas" },
+  { id:"peppermint", name:"Peppermint in pot",     emoji:"🌿", type:"tea",       spread:2,  height:2,  water:"moderate", note:"KEEP IN POT - spreads aggressively" },
+  { id:"fennel",     name:"Fennel",                emoji:"🌿", type:"tea",       spread:3,  height:4,  alleloRadius:6, water:"low", note:"Digestive · self-seeds · edible" },
+  { id:"feverfew",   name:"Feverfew",              emoji:"🌼", type:"tea",       spread:2,  height:2,  water:"moderate", note:"Migraine prevention · part shade" },
+  { id:"mullein",    name:"Mullein",               emoji:"🌿", type:"tea",       spread:2,  height:5,  water:"moderate", note:"Respiratory · biennial self-seeds" },
+  { id:"echinacea",  name:"Echinacea",             emoji:"🌸", type:"tea",       spread:2,  height:3,  water:"moderate", note:"Immune · needs good drainage" },
+  { id:"thaibasil",  name:"Thai Basil",            emoji:"🌿", type:"aromatic",  spread:2,  height:2,  water:"moderate", note:"Perennial · repels aphids" },
+  { id:"rosegeram",  name:"Rose Geranium",         emoji:"🌸", type:"aromatic",  spread:3,  height:3,  water:"moderate", note:"Mosquito and aphid deterrent" },
+  { id:"socgarlic",  name:"Society Garlic",        emoji:"💜", type:"aromatic",  spread:3,  height:2,  water:"moderate", note:"Allium scent deters insects" },
+  { id:"chives",     name:"Chives",                emoji:"🌿", type:"aromatic",  spread:2,  height:1,  water:"moderate", note:"Deters aphids · handles shade" },
+  { id:"tansy",      name:"Tansy",                 emoji:"🌼", type:"aromatic",  spread:3,  height:3,  alleloRadius:4, water:"low", note:"Strong ant deterrent" },
+  { id:"pandan",     name:"Pandan",                emoji:"🌿", type:"aromatic",  spread:4,  height:5,  water:"high", note:"Ant deterrent · culinary tea" },
+  { id:"vietcori",   name:"Vietnamese Coriander",  emoji:"🌿", type:"aromatic",  spread:2,  height:2,  water:"high", note:"Perennial cilantro · moist shade" },
 ];
 
 const CONFLICTING_PAIRS = new Set([
@@ -140,6 +140,9 @@ function pairReason(id1, id2) {
     if ((c.id1===id1 && c.id2===id2) || (c.id1===id2 && c.id2===id1)) return c.reason;
   }
   return null;
+}
+function waterDrops(level) {
+  return level==="high" ? "💧💧💧" : level==="low" ? "💧" : "💧💧";
 }
 
 const ZONE_DEFS = [
@@ -650,9 +653,12 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
 
   const overlapping = new Set();
   const proximity = new Map();
-  function addProx(id, partner) {
-    if (!proximity.has(id)) proximity.set(id, []);
-    proximity.get(id).push(partner);
+  const waterMild = new Map();
+  const waterSevere = new Map();
+  const WATER_LEVEL = { low:1, moderate:2, high:3 };
+  function addTo(map, id, partner) {
+    if (!map.has(id)) map.set(id, []);
+    map.get(id).push(partner);
   }
   for (let i=0;i<placed.length;i++) {
     for (let j=i+1;j<placed.length;j++) {
@@ -667,8 +673,18 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
       const reach1 = (p1.alleloRadius ?? p1.spread/2) * SC;
       const reach2 = (p2.alleloRadius ?? p2.spread/2) * SC;
       if (reason && dist < reach1 + reach2) {
-        addProx(p1.instanceId, { instanceId:p2.instanceId, name:p2.name, reason });
-        addProx(p2.instanceId, { instanceId:p1.instanceId, name:p1.name, reason });
+        addTo(proximity, p1.instanceId, { instanceId:p2.instanceId, name:p2.name, reason });
+        addTo(proximity, p2.instanceId, { instanceId:p1.instanceId, name:p1.name, reason });
+      }
+      const waterDelta = Math.abs((WATER_LEVEL[p1.water]||2) - (WATER_LEVEL[p2.water]||2));
+      if (waterDelta > 0 && dist < 1.5 * (p1.spread + p2.spread) * SC) {
+        const severe = waterDelta === 2;
+        const target = severe ? waterSevere : waterMild;
+        const verb = severe ? "Water conflict" : "Water mismatch";
+        const tail = severe ? "these should not be planted together" : "workable but not ideal";
+        const msg = `${verb}: ${p1.name} needs ${waterDrops(p1.water)} and ${p2.name} needs ${waterDrops(p2.water)} — ${tail}`;
+        addTo(target, p1.instanceId, { instanceId:p2.instanceId, name:p2.name, reason:msg });
+        addTo(target, p2.instanceId, { instanceId:p1.instanceId, name:p1.name, reason:msg });
       }
     }
   }
@@ -755,18 +771,20 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
           <text x={OX} y={OY-8} fill={`${zone.accent}77`} fontSize="8" fontFamily="monospace">{zone.desc}</text>
 
           {/* Spread circles */}
-          <g clipPath={zone.shape==="triangle"?`url(#${clipId})`:undefined}>
+          <g>
             {placed.map(plant => {
               if (plant.type==="vine") return null;
               const tc = TYPE_META[plant.type]||TYPE_META.shrub;
               const {sx,sy} = toSVG(plant.x,plant.y);
               const isOv = overlapping.has(plant.instanceId);
               const isProx = proximity.has(plant.instanceId);
+              const isWSev = waterSevere.has(plant.instanceId);
+              const isWMild = waterMild.has(plant.instanceId);
               const isSel = selected===plant.instanceId;
               const dim = filterType!=="all" && plant.type!==filterType;
               if (plant.alleloRadius) {
                 const r = plant.alleloRadius * SC;
-                const active = isOv || isProx;
+                const active = isOv || isProx || isWSev || isWMild;
                 return (
                   <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
                     fill={active?"rgba(220,50,50,0.15)":"rgba(220,50,50,0.05)"}
@@ -777,13 +795,29 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                 );
               }
               const r = (plant.spread/2)*SC;
-              const showProx = isProx && !isOv;
-              const fill = isOv?"rgba(220,50,50,0.13)":showProx?"rgba(255,149,68,0.13)":`rgba(${hexRgb(tc.color)},${tc.circleOpacity})`;
-              const stroke = isOv?"#e05050":showProx?"#ff9544":isSel?tc.border:`${tc.border}33`;
+              const isRed = isOv || isWSev;
+              const showProx = isProx && !isRed;
+              const showMild = isWMild && !isRed && !showProx;
+              const fill = isOv?"rgba(220,50,50,0.13)"
+                         : isWSev?"rgba(220,50,50,0.08)"
+                         : showProx?"rgba(255,149,68,0.13)"
+                         : showMild?"rgba(233,196,74,0.06)"
+                         : `rgba(${hexRgb(tc.color)},${tc.circleOpacity})`;
+              const idleStroke = plant.type==="canopy" ? `${tc.border}88` : `${tc.border}33`;
+              const stroke = isRed?"#e05050"
+                           : showProx?"#ff9544"
+                           : showMild?"#e9c46a"
+                           : isSel?tc.border:idleStroke;
+              const dash = isOv?"4,2"
+                         : isWSev?"4,3"
+                         : showProx?"4,2"
+                         : showMild?"4,3"
+                         : "";
               return (
                 <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
                   fill={fill} stroke={stroke}
-                  strokeWidth={isSel?1.5:0.8} strokeDasharray={isOv||showProx?"4,2":""}
+                  strokeWidth={isSel?1.5:0.8}
+                  strokeDasharray={dash}
                   opacity={dim?0.2:1}/>
               );
             })}
@@ -808,10 +842,11 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                 {isSel && <circle r={17} fill="none" stroke={tc.border} strokeWidth="2"/>}
                 <circle r={11} fill={isOv?"#3a0a0a":tc.color} stroke={isOv?"#e05050":isProx?"#ff9544":tc.border} strokeWidth={isSel?2:1.2}/>
                 <text y={4} textAnchor="middle" fontSize="12" style={{pointerEvents:"none"}}>{plant.emoji}</text>
+                <text y={20} textAnchor="middle" fontSize="7" style={{pointerEvents:"none"}}>{waterDrops(plant.water)}</text>
                 {isSel && (
                   <g style={{pointerEvents:"none"}}>
-                    <text y={26} textAnchor="middle" fill={tc.text} fontSize="7" fontFamily="monospace">{plant.name.length>17?plant.name.slice(0,16)+"…":plant.name}</text>
-                    <text y={36} textAnchor="middle" fill="#e0505077" fontSize="6">Del key to delete</text>
+                    <text y={32} textAnchor="middle" fill={tc.text} fontSize="7" fontFamily="monospace">{plant.name.length>17?plant.name.slice(0,16)+"…":plant.name}</text>
+                    <text y={42} textAnchor="middle" fill="#e0505077" fontSize="6">Del key to delete</text>
                   </g>
                 )}
               </g>
@@ -845,8 +880,18 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             <div style={{ color:"#74c69d", fontSize:"10px", lineHeight:"1.4", marginBottom:"6px" }}>{selectedPlant.note}</div>
             {overlapping.has(selectedPlant.instanceId) && <div style={{ color:"#e05050", fontSize:"9px", marginBottom:"5px" }}>Too close to another plant</div>}
             {proximity.has(selectedPlant.instanceId) && proximity.get(selectedPlant.instanceId).map((c,i) => (
-              <div key={i} style={{ color:"#ff9544", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
+              <div key={`p${i}`} style={{ color:"#ff9544", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
                 ⚠ Near {c.name}: {c.reason}
+              </div>
+            ))}
+            {waterSevere.has(selectedPlant.instanceId) && waterSevere.get(selectedPlant.instanceId).map((c,i) => (
+              <div key={`ws${i}`} style={{ color:"#e05050", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
+                💧 {c.reason}
+              </div>
+            ))}
+            {waterMild.has(selectedPlant.instanceId) && waterMild.get(selectedPlant.instanceId).map((c,i) => (
+              <div key={`wm${i}`} style={{ color:"#e9c46a", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
+                💧 {c.reason}
               </div>
             ))}
             <button onClick={()=>{onDelete(selectedPlant.instanceId);setSelected(null);}}
@@ -890,7 +935,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                   >
                     <span style={{ fontSize:"14px", flexShrink:0 }}>{plant.emoji}</span>
                     <div style={{ overflow:"hidden", flex:1 }}>
-                      <div style={{ color:meta.text, fontSize:"10px", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{plant.name}</div>
+                      <div style={{ color:meta.text, fontSize:"10px", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{plant.name} <span style={{ fontSize:"8px" }}>{waterDrops(plant.water)}</span></div>
                       <div style={{ color:`${meta.border}77`, fontSize:"8px" }}>spread:{plant.spread}ft h:{plant.height}ft</div>
                     </div>
                   </div>
