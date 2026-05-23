@@ -473,16 +473,28 @@ function Overview({ placedByZone, onZoneClick }) {
 
 function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFilterType, search, setSearch }) {
   const svgRef = useRef(null);
+  const canvasRef = useRef(null);
   const [draggingNew, setDraggingNew] = useState(null);
   const [draggingPlaced, setDraggingPlaced] = useState(null);
   const [selected, setSelected] = useState(null);
   const [ghostPos, setGhostPos] = useState(null);
+  const [canvasSize, setCanvasSize] = useState({ w: 1400, h: 900 });
+
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const update = () => setCanvasSize({ w: el.clientWidth, h: el.clientHeight });
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const PAD = 58;
-  const CVW = 900, CVH = 580;
+  const CVW = canvasSize.w, CVH = canvasSize.h;
   const scX = (CVW - PAD*2) / zone.widthFt;
   const scY = (CVH - PAD*2) / zone.heightFt;
-  const SC = Math.min(scX, scY, 20);
+  const SC = Math.min(scX, scY, 30);
   const zW = zone.widthFt * SC, zH = zone.heightFt * SC;
   const OX = PAD, OY = PAD;
 
@@ -630,13 +642,13 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
 
   return (
     <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
-      <div style={{ flex:1, overflow:"auto", background:"#080f09" }}
+      <div ref={canvasRef} style={{ flex:1, overflow:"hidden", background:"#080f09" }}
         onMouseMove={onMove2} onTouchMove={e=>{e.preventDefault();onMove2(e);}}
         onMouseUp={onUp} onTouchEnd={onUp}
         onClick={()=>setSelected(null)}
       >
         <svg ref={svgRef} viewBox={`0 0 ${CVW} ${CVH}`}
-          style={{ width:"100%", minWidth:"480px", display:"block", cursor:draggingNew?"crosshair":draggingPlaced?"grabbing":"default" }}>
+          style={{ width:"100%", height:"100%", display:"block", cursor:draggingNew?"crosshair":draggingPlaced?"grabbing":"default" }}>
           <rect width={CVW} height={CVH} fill="#0a140b"/>
           <defs>
             {zone.shape==="triangle" && (
