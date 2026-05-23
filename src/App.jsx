@@ -653,9 +653,6 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
 
   const overlapping = new Set();
   const proximity = new Map();
-  const waterMild = new Map();
-  const waterSevere = new Map();
-  const WATER_LEVEL = { low:1, moderate:2, high:3 };
   function addTo(map, id, partner) {
     if (!map.has(id)) map.set(id, []);
     map.get(id).push(partner);
@@ -675,16 +672,6 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
       if (reason && dist < reach1 + reach2) {
         addTo(proximity, p1.instanceId, { instanceId:p2.instanceId, name:p2.name, reason });
         addTo(proximity, p2.instanceId, { instanceId:p1.instanceId, name:p1.name, reason });
-      }
-      const waterDelta = Math.abs((WATER_LEVEL[p1.water]||2) - (WATER_LEVEL[p2.water]||2));
-      if (waterDelta > 0 && dist < 1.5 * (p1.spread + p2.spread) * SC) {
-        const severe = waterDelta === 2;
-        const target = severe ? waterSevere : waterMild;
-        const verb = severe ? "Water conflict" : "Water mismatch";
-        const tail = severe ? "these should not be planted together" : "workable but not ideal";
-        const msg = `${verb}: ${p1.name} needs ${waterDrops(p1.water)} and ${p2.name} needs ${waterDrops(p2.water)} — ${tail}`;
-        addTo(target, p1.instanceId, { instanceId:p2.instanceId, name:p2.name, reason:msg });
-        addTo(target, p2.instanceId, { instanceId:p1.instanceId, name:p1.name, reason:msg });
       }
     }
   }
@@ -778,13 +765,11 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               const {sx,sy} = toSVG(plant.x,plant.y);
               const isOv = overlapping.has(plant.instanceId);
               const isProx = proximity.has(plant.instanceId);
-              const isWSev = waterSevere.has(plant.instanceId);
-              const isWMild = waterMild.has(plant.instanceId);
               const isSel = selected===plant.instanceId;
               const dim = filterType!=="all" && plant.type!==filterType;
               if (plant.alleloRadius) {
                 const r = plant.alleloRadius * SC;
-                const active = isOv || isProx || isWSev || isWMild;
+                const active = isOv || isProx;
                 return (
                   <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
                     fill={active?"rgba(220,50,50,0.15)":"rgba(220,50,50,0.05)"}
@@ -795,29 +780,19 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
                 );
               }
               const r = (plant.spread/2)*SC;
-              const isRed = isOv || isWSev;
-              const showProx = isProx && !isRed;
-              const showMild = isWMild && !isRed && !showProx;
+              const showProx = isProx && !isOv;
               const fill = isOv?"rgba(220,50,50,0.13)"
-                         : isWSev?"rgba(220,50,50,0.08)"
                          : showProx?"rgba(255,149,68,0.13)"
-                         : showMild?"rgba(233,196,74,0.06)"
                          : `rgba(${hexRgb(tc.color)},${tc.circleOpacity})`;
               const idleStroke = plant.type==="canopy" ? `${tc.border}88` : `${tc.border}33`;
-              const stroke = isRed?"#e05050"
+              const stroke = isOv?"#e05050"
                            : showProx?"#ff9544"
-                           : showMild?"#e9c46a"
                            : isSel?tc.border:idleStroke;
-              const dash = isOv?"4,2"
-                         : isWSev?"4,3"
-                         : showProx?"4,2"
-                         : showMild?"4,3"
-                         : "";
               return (
                 <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
                   fill={fill} stroke={stroke}
                   strokeWidth={isSel?1.5:0.8}
-                  strokeDasharray={dash}
+                  strokeDasharray={isOv||showProx?"4,2":""}
                   opacity={dim?0.2:1}/>
               );
             })}
@@ -882,16 +857,6 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             {proximity.has(selectedPlant.instanceId) && proximity.get(selectedPlant.instanceId).map((c,i) => (
               <div key={`p${i}`} style={{ color:"#ff9544", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
                 ⚠ Near {c.name}: {c.reason}
-              </div>
-            ))}
-            {waterSevere.has(selectedPlant.instanceId) && waterSevere.get(selectedPlant.instanceId).map((c,i) => (
-              <div key={`ws${i}`} style={{ color:"#e05050", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
-                💧 {c.reason}
-              </div>
-            ))}
-            {waterMild.has(selectedPlant.instanceId) && waterMild.get(selectedPlant.instanceId).map((c,i) => (
-              <div key={`wm${i}`} style={{ color:"#e9c46a", fontSize:"9px", marginBottom:"5px", lineHeight:"1.4" }}>
-                💧 {c.reason}
               </div>
             ))}
             <button onClick={()=>{onDelete(selectedPlant.instanceId);setSelected(null);}}
