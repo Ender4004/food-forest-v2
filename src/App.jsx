@@ -147,10 +147,10 @@ function waterDrops(level) {
 
 const ZONE_DEFS = [
   { id:"triangle",  label:"Triangle Food Forest",           emoji:"🌳", color:"#1a4a2e", accent:"#52b788", widthFt:45, heightFt:98, shape:"triangle", desc:"45ft base · 100ft sides · East dry · West wet · 8ft E to W drop" },
-  { id:"fence_n",   label:"North Fence Triangle 100ft",     emoji:"🪢", color:"#7c4a00", accent:"#f4a261", widthFt:100,heightFt:12, shape:"fence",    desc:"100ft cattle fence east edge of triangle" },
-  { id:"fence_s",   label:"South Fence House Frontage 100ft",emoji:"🐉",color:"#5a3800", accent:"#e9a84a", widthFt:100,heightFt:12, shape:"fence",    desc:"100ft cattle fence along road by house" },
+  { id:"fence_n",   label:"North Fence Triangle 100ft",     emoji:"🪢", color:"#7c4a00", accent:"#f4a261", widthFt:12, heightFt:100, shape:"fence",    desc:"100ft cattle fence east edge of triangle" },
+  { id:"fence_s",   label:"South Fence House Frontage 100ft",emoji:"🐉",color:"#5a3800", accent:"#e9a84a", widthFt:12, heightFt:100, shape:"fence",    desc:"100ft cattle fence along road by house" },
   { id:"fence_emi", label:"Emis Ditch Fence 50ft",          emoji:"🫘", color:"#2a4a1a", accent:"#a7c957", widthFt:50, heightFt:12, shape:"fence",    desc:"50ft south boundary fence" },
-  { id:"shelf",     label:"West Shelf 10ft x 100ft",        emoji:"🍋", color:"#1a3a2a", accent:"#4db88a", widthFt:100,heightFt:12, shape:"rect",     desc:"10ft wide · 100ft long · stay under 8-10ft · ocean view" },
+  { id:"shelf",     label:"West Shelf 10ft x 100ft",        emoji:"🍋", color:"#1a3a2a", accent:"#4db88a", widthFt:12, heightFt:100, shape:"rect",     desc:"10ft wide · 100ft long · stay under 8-10ft · ocean view" },
   { id:"shower",    label:"Outdoor Shower Area",            emoji:"🚿", color:"#1a2a2a", accent:"#4a9a9a", widthFt:25, heightFt:25, shape:"rect",     desc:"SW corner of house · Mamaki and moisture lovers" },
 ];
 
@@ -389,19 +389,19 @@ function Overview({ placedByZone, onZoneClick }) {
         sx = TRI_SW.x + fx * (TRI_SE.x - TRI_SW.x);
         sy = TRI_TIP.y + fy * (TRI_SE.y - TRI_TIP.y);
       } else if (zoneId === "fence_n") {
-        sx = lrp(TRI_TIP.x, TRI_SE.x, fx) + (fy - 0.5) * 14;
-        sy = lrp(TRI_TIP.y, TRI_SE.y, fx);
+        sx = lrp(TRI_TIP.x, TRI_SE.x, fy) + (fx - 0.5) * 14;
+        sy = lrp(TRI_TIP.y, TRI_SE.y, fy);
       } else if (zoneId === "fence_s") {
-        sx = lrp(TRI_SE.x, ROAD_X, fx) + (fy - 0.5) * 14;
-        sy = lrp(TRI_SE.y, SOUTH_Y, fx);
+        sx = lrp(TRI_SE.x, ROAD_X, fy) + (fx - 0.5) * 14;
+        sy = lrp(TRI_SE.y, SOUTH_Y, fy);
       } else if (zoneId === "fence_emi") {
         sx = lrp(ROAD_X, GULCH_X, fx);
         sy = SOUTH_Y + (fy - 0.5) * 12;
       } else if (zoneId === "shelf") {
         const rx = GULCH_X, ry = TRI_SW.y + 14;
         const rw = VETIVER_X - GULCH_X - 5, rh = SOUTH_Y - TRI_SW.y - 48;
-        sx = rx + fy * rw;
-        sy = ry + fx * rh;
+        sx = rx + fx * rw;
+        sy = ry + fy * rh;
       } else if (zoneId === "shower") {
         const rx = HOUSE_X1 - 42, ry = HOUSE_Y2 - 48, rw = 38, rh = 38;
         sx = rx + fx * rw;
@@ -726,12 +726,16 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
       );
     }
     if (zone.shape==="fence") {
+      const vertical = zone.heightFt > zone.widthFt;
+      const line = vertical
+        ? { x1:OX+zW/2, y1:OY, x2:OX+zW/2, y2:OY+zH }
+        : { x1:OX,      y1:OY+zH/2, x2:OX+zW, y2:OY+zH/2 };
       return (
         <g>
           <rect x={OX} y={OY} width={zW} height={zH} fill={`${zone.color}22`} stroke={zone.accent} strokeWidth="1.5" rx="4"/>
-          <line x1={OX} y1={OY+zH/2} x2={OX+zW} y2={OY+zH/2} stroke={zone.accent} strokeWidth="3" strokeDasharray="10,5" opacity="0.5"/>
-          <text x={OX+zW/2} y={OY+zH/2-10} fill={`${zone.accent}88`} fontSize="9" textAnchor="middle">FENCE LINE</text>
-          <text x={OX+4} y={OY+14} fill={`${zone.accent}66`} fontSize="8">total: {zone.widthFt}ft</text>
+          <line {...line} stroke={zone.accent} strokeWidth="3" strokeDasharray="10,5" opacity="0.5"/>
+          <text x={OX+zW/2} y={vertical?OY+14:OY+zH/2-10} fill={`${zone.accent}88`} fontSize="9" textAnchor="middle">FENCE LINE</text>
+          <text x={OX+4} y={vertical?OY+zH-6:OY+14} fill={`${zone.accent}66`} fontSize="8">total: {Math.max(zone.widthFt,zone.heightFt)}ft</text>
         </g>
       );
     }
