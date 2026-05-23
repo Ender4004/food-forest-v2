@@ -95,6 +95,17 @@ const PLANTS = [
   { id:"vietcori",   name:"Vietnamese Coriander",  emoji:"🌿", type:"aromatic",  spread:2,  height:2,  note:"Perennial cilantro · moist shade" },
 ];
 
+const CONFLICTING_PAIRS = new Set([
+  "canopy|canopy",
+  "canopy|subcanopy",
+  "subcanopy|subcanopy",
+  "shrub|shrub",
+]);
+function conflicts(t1, t2) {
+  const key = t1 < t2 ? `${t1}|${t2}` : `${t2}|${t1}`;
+  return CONFLICTING_PAIRS.has(key);
+}
+
 const ZONE_DEFS = [
   { id:"triangle",  label:"Triangle Food Forest",           emoji:"🌳", color:"#1a4a2e", accent:"#52b788", widthFt:45, heightFt:98, shape:"triangle", desc:"45ft base · 100ft sides · East dry · West wet · 8ft E to W drop" },
   { id:"fence_n",   label:"North Fence Triangle 100ft",     emoji:"🪢", color:"#7c4a00", accent:"#f4a261", widthFt:100,heightFt:12, shape:"fence",    desc:"100ft cattle fence east edge of triangle" },
@@ -327,13 +338,43 @@ function Overview({ placedByZone, onZoneClick }) {
   const [hov, setHov] = useState(null);
   const hit = id => ({ onClick:()=>onZoneClick(id), onMouseEnter:()=>setHov(id), onMouseLeave:()=>setHov(null), style:{cursor:"pointer"} });
 
-  function dots(zoneId, cx, cy) {
-    const p = (placedByZone[zoneId]||[]).slice(0,8);
-    if (!p.length) return null;
-    return p.map((pl,i) => (
-      <text key={pl.instanceId} x={cx+(i%4)*11-17} y={cy+Math.floor(i/4)*12}
-        fontSize="10" textAnchor="middle" style={{pointerEvents:"none"}}>{pl.emoji}</text>
-    ));
+  function dots(zoneId) {
+    const plants = placedByZone[zoneId] || [];
+    if (!plants.length) return null;
+    const zone = ZONE_DEFS.find(z => z.id === zoneId);
+    if (!zone) return null;
+    return plants.map(p => {
+      let sx, sy;
+      const fx = p.x / zone.widthFt, fy = p.y / zone.heightFt;
+      if (zoneId === "triangle") {
+        sx = TRI_SW.x + fx * (TRI_SE.x - TRI_SW.x);
+        sy = TRI_TIP.y + fy * (TRI_SE.y - TRI_TIP.y);
+      } else if (zoneId === "fence_n") {
+        sx = lrp(TRI_TIP.x, TRI_SE.x, fx) + (fy - 0.5) * 14;
+        sy = lrp(TRI_TIP.y, TRI_SE.y, fx);
+      } else if (zoneId === "fence_s") {
+        sx = lrp(TRI_SE.x, ROAD_X, fx) + (fy - 0.5) * 14;
+        sy = lrp(TRI_SE.y, SOUTH_Y, fx);
+      } else if (zoneId === "fence_emi") {
+        sx = lrp(ROAD_X, GULCH_X, fx);
+        sy = SOUTH_Y + (fy - 0.5) * 12;
+      } else if (zoneId === "shelf") {
+        const rx = GULCH_X, ry = TRI_SW.y + 14;
+        const rw = VETIVER_X - GULCH_X - 5, rh = SOUTH_Y - TRI_SW.y - 48;
+        sx = rx + fy * rw;
+        sy = ry + fx * rh;
+      } else if (zoneId === "shower") {
+        const rx = HOUSE_X1 - 42, ry = HOUSE_Y2 - 48, rw = 38, rh = 38;
+        sx = rx + fx * rw;
+        sy = ry + fy * rh;
+      } else {
+        return null;
+      }
+      return (
+        <text key={p.instanceId} x={sx} y={sy + 3} fontSize="11" textAnchor="middle"
+          style={{ pointerEvents: "none" }}>{p.emoji}</text>
+      );
+    });
   }
 
   const s1x_base = lrp(TRI_SW.x, TRI_SE.x, 0.33);
@@ -368,26 +409,26 @@ function Overview({ placedByZone, onZoneClick }) {
         })}
         <text x={lrp(TRI_SE.x,TRI_SW.x,0.5)} y={lrp(TRI_TIP.y,TRI_SE.y,0.42)} fill="#74c69d" fontSize="10" textAnchor="middle" style={{pointerEvents:"none"}}>FOOD FOREST</text>
         <text x={lrp(TRI_SE.x,TRI_SW.x,0.5)} y={lrp(TRI_TIP.y,TRI_SE.y,0.42)+13} fill="#52b78855" fontSize="7" textAnchor="middle" style={{pointerEvents:"none"}}>tap to plant</text>
-        {dots("triangle", lrp(TRI_SE.x,TRI_SW.x,0.5), lrp(TRI_TIP.y,TRI_SE.y,0.62))}
+        {dots("triangle")}
 
         {/* North fence */}
         <line x1={TRI_TIP.x} y1={TRI_TIP.y} x2={TRI_SE.x} y2={TRI_SE.y}
           stroke={hov==="fence_n"?"#f4a261":"#f4a26155"} strokeWidth={hov==="fence_n"?8:5} {...hit("fence_n")}/>
         <text x={ROAD_X+10} y={lrp(TRI_TIP.y,TRI_SE.y,0.32)} fill="#f4a26177" fontSize="7">N.FENCE</text>
-        {(placedByZone["fence_n"]||[]).slice(0,5).map((p,i)=>(
-          <text key={p.instanceId} x={ROAD_X+12} y={lrp(TRI_TIP.y,TRI_SE.y,0.5)+i*13} fontSize="10" style={{pointerEvents:"none"}}>{p.emoji}</text>
-        ))}
+        {dots("fence_n")}
 
         {/* South fence */}
         <line x1={TRI_SE.x} y1={TRI_SE.y} x2={ROAD_X} y2={SOUTH_Y}
           stroke={hov==="fence_s"?"#e9a84a":"#e9a84a44"} strokeWidth={hov==="fence_s"?8:5} {...hit("fence_s")}/>
         <text x={ROAD_X+10} y={lrp(TRI_SE.y,SOUTH_Y,0.38)} fill="#e9a84a77" fontSize="7">S.FENCE</text>
+        {dots("fence_s")}
 
         {/* Emi fence */}
         <line x1={ROAD_X} y1={SOUTH_Y} x2={GULCH_X} y2={SOUTH_Y}
           stroke={hov==="fence_emi"?"#a7c957":"#a7c95744"} strokeWidth={hov==="fence_emi"?5:3}
           strokeDasharray="8,3" {...hit("fence_emi")}/>
         <text x={lrp(GULCH_X,ROAD_X,0.22)} y={SOUTH_Y+13} fill="#a7c95566" fontSize="7">EMIS FENCE - tap to plant</text>
+        {dots("fence_emi")}
 
         {/* Shelf */}
         <rect x={GULCH_X} y={TRI_SW.y+14} width={VETIVER_X-GULCH_X-5} height={SOUTH_Y-TRI_SW.y-48}
@@ -395,7 +436,7 @@ function Overview({ placedByZone, onZoneClick }) {
           {...hit("shelf")}/>
         <text x={lrp(GULCH_X,VETIVER_X,0.5)} y={TRI_SW.y+30} fill="#4db88a" fontSize="7" textAnchor="middle" style={{pointerEvents:"none"}}>SHELF</text>
         <text x={lrp(GULCH_X,VETIVER_X,0.5)} y={TRI_SW.y+42} fill="#4db88a55" fontSize="6" textAnchor="middle" style={{pointerEvents:"none"}}>stay low</text>
-        {dots("shelf", lrp(GULCH_X,VETIVER_X,0.5), lrp(TRI_SW.y+55, SOUTH_Y-30, 0.5))}
+        {dots("shelf")}
 
         <rect x={TRI_SW.x} y={TRI_SE.y} width={TRI_SE.x-TRI_SW.x} height={50} fill="#2d4a1a18" stroke="#8bc34a28" strokeWidth="1" rx="2"/>
         <text x={lrp(TRI_SW.x,TRI_SE.x,0.5)} y={TRI_SE.y+16} fill="#8bc34a55" fontSize="7" textAnchor="middle">Garden Zone</text>
@@ -419,7 +460,7 @@ function Overview({ placedByZone, onZoneClick }) {
           {...hit("shower")}/>
         <text x={HOUSE_X1-23} y={HOUSE_Y2-30} fill="#4a9a9a" fontSize="11" textAnchor="middle" style={{pointerEvents:"none"}}>🚿</text>
         <text x={HOUSE_X1-23} y={HOUSE_Y2-15} fill="#4a9a9a77" fontSize="6" textAnchor="middle" style={{pointerEvents:"none"}}>tap</text>
-        {dots("shower", HOUSE_X1-23, HOUSE_Y2-5)}
+        {dots("shower")}
 
         <circle cx={ROAD_X} cy={lrp(HOUSE_Y1,HOUSE_Y2,0.5)} r={9} fill="#e9c46a15" stroke="#e9c46a" strokeWidth="1.5"/>
         <text x={ROAD_X} y={lrp(HOUSE_Y1,HOUSE_Y2,0.5)+4} fill="#e9c46a" fontSize="8" textAnchor="middle">⛩</text>
@@ -575,6 +616,7 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
   for (let i=0;i<placed.length;i++) {
     for (let j=i+1;j<placed.length;j++) {
       const p1=placed[i],p2=placed[j];
+      if (!conflicts(p1.type, p2.type)) continue;
       const {sx:x1,sy:y1}=toSVG(p1.x,p1.y), {sx:x2,sy:y2}=toSVG(p2.x,p2.y);
       const r1=(p1.spread/2)*SC, r2=(p2.spread/2)*SC;
       if (Math.sqrt((x1-x2)**2+(y1-y2)**2)<r1+r2) { overlapping.add(p1.instanceId); overlapping.add(p2.instanceId); }
@@ -671,11 +713,13 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
               const r = (plant.spread/2)*SC;
               const isOv = overlapping.has(plant.instanceId);
               const isSel = selected===plant.instanceId;
+              const dim = filterType!=="all" && plant.type!==filterType;
               return (
                 <circle key={`c_${plant.instanceId}`} cx={sx} cy={sy} r={r}
                   fill={isOv?"rgba(220,50,50,0.13)":`rgba(${hexRgb(tc.color)},${tc.circleOpacity})`}
                   stroke={isOv?"#e05050":isSel?tc.border:`${tc.border}33`}
-                  strokeWidth={isSel?1.5:0.8} strokeDasharray={isOv?"4,2":""}/>
+                  strokeWidth={isSel?1.5:0.8} strokeDasharray={isOv?"4,2":""}
+                  opacity={dim?0.2:1}/>
               );
             })}
           </g>
@@ -686,8 +730,10 @@ function ZonePlanner({ zone, placed, onAdd, onDelete, onMove, filterType, setFil
             const {sx,sy} = toSVG(plant.x,plant.y);
             const isSel = selected===plant.instanceId;
             const isOv = overlapping.has(plant.instanceId);
+            const dim = filterType!=="all" && plant.type!==filterType;
             return (
               <g key={plant.instanceId} style={{ cursor:"grab", userSelect:"none" }}
+                opacity={dim?0.2:1}
                 onMouseDown={e=>onPlacedDown(e,plant)}
                 onTouchStart={e=>{e.preventDefault();onPlacedDown(e,plant);}}
                 onClick={e=>{e.stopPropagation();setSelected(isSel?null:plant.instanceId);}}
